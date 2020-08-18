@@ -476,10 +476,17 @@ public class GriefWarnings {
         if (stats != null) {
             stats.gone = true;
             String traceString = "";
-
+            
             if (leaveMessages) {
-               if (stats.trace != null) traceString = " " + formatTrace(stats.trace);
-               sendLocal("[accent]Player leave:[] " + formatPlayer(targetPlayer) + traceString);
+                if (player.isAdmin && autotrace) {
+                    stats.doTrace(trace -> {
+                        sendLocal("[accent]Player leave:[] " + formatPlayer(targetPlayer) + " " + formatTrace(trace));
+                        Log.infoTag("antigrief", "Player leave: " + targetPlayer.name + " (" + targetPlayer.id + ") " + formatTrace(trace));
+                    });
+
+                } else {
+                    sendLocal("[accent]Player leave:[] " + formatPlayer(targetPlayer));
+                }
             }
         }
     }
