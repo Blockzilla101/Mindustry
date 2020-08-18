@@ -93,9 +93,9 @@ public class ChatFragment extends Table{
     }
 
     public void clearMessages(){
-        messages.clear();
-        history.clear();
-        history.insert(0, "");
+        // messages.clear();
+        // history.clear();
+        // history.insert(0, "");
     }
 
     private void setup(){
