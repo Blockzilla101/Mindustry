@@ -32,7 +32,7 @@ public class PlayerStats {
 
     public boolean doTrace(Cons<TraceInfo> callback) {
         Player target = wrappedPlayer.get();
-        if (target != null && player.isAdmin) {
+        if (target != null && player.isAdmin && !target.isAdmin) {
             autoTraceRequested = true;
             if (callback != null) traceListeners.add(callback);
             Call.onAdminRequest(target, AdminAction.trace);

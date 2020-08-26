@@ -234,17 +234,18 @@ public class GriefWarnings {
             target.stats = stats;
             refs.get(target); // create ref
             if (target == player) return stats;
-
-            if (joinMessages) {
-                if (player.isAdmin && autotrace) {
+            
+            if (player.isAdmin && autotrace) {
+                if (joinMessages) {
                     stats.doTrace(trace -> {
                         sendLocal("[accent]Player join:[] " + formatPlayer(target) + " " + formatTrace(trace));
                         Log.infoTag("antigrief", "Player join: " + target.name + " (" + player.id+ ") " + formatTrace(trace));
                     });
-
                 } else {
-                    sendLocal("[accent]Player join:[] " + formatPlayer(target));
+                    stats.doTrace(null);
                 }
+            } else if (joinMessages) {
+                sendLocal("[accent]Player join:[] " + formatPlayer(target));
             }
         }
         return stats;
@@ -478,11 +479,9 @@ public class GriefWarnings {
             String traceString = "";
             
             if (leaveMessages) {
-                if (player.isAdmin && autotrace) {
-                    stats.doTrace(trace -> {
-                        sendLocal("[accent]Player leave:[] " + formatPlayer(targetPlayer) + " " + formatTrace(trace));
-                        Log.infoTag("antigrief", "Player leave: " + targetPlayer.name + " (" + targetPlayer.id + ") " + formatTrace(trace));
-                    });
+                if (player.isAdmin && autotrace && stats.trace != null) {
+                    sendLocal("[accent]Player leave:[] " + formatPlayer(targetPlayer) + " " + formatTrace(stats.trace));
+                    Log.infoTag("antigrief", "Player leave: " + targetPlayer.name + " (" + targetPlayer.id + ") " + formatTrace(stats.trace));
 
                 } else {
                     sendLocal("[accent]Player leave:[] " + formatPlayer(targetPlayer));
