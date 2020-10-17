@@ -41,7 +41,7 @@ public class ChatFragment extends Table{
             scene.add(ChatFragment.this);
         }
     };
-    
+
     private boolean jsSync = false;
 
     public ChatFragment(){
@@ -93,9 +93,11 @@ public class ChatFragment extends Table{
     }
 
     public void clearMessages(){
-        // messages.clear();
-        // history.clear();
-        // history.insert(0, "");
+        if (mobile) {
+            messages.clear();
+            history.clear();
+            history.insert(0, "");
+        }
     }
 
     private void setup(){
