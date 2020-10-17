@@ -1,10 +1,9 @@
 package mindustry.game.griefprevention;
 
-import arc.Core;
-import arc.math.geom.Vec2;
-import arc.scene.Element;
+import arc.util.Strings;
 import arc.scene.event.Touchable;
 import arc.scene.ui.layout.Table;
+
 import mindustry.gen.Tex;
 import mindustry.world.Tile;
 
@@ -24,6 +23,6 @@ public class TileInfoHud extends Table {
         Tile tile = griefWarnings.commandHandler.getCursorTile();
         if (tile == lastTile) return lastOutput;
         if (tile == null) return lastOutput = "No data";
-        return lastOutput = String.join("\n", griefWarnings.commandHandler.tileInfo(tile));
+        return lastOutput = Strings.join("\n", griefWarnings.commandHandler.tileInfo(tile));
     }
 }

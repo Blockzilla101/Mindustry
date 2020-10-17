@@ -30,9 +30,9 @@ public class FixGrief {
 
     public void iterateAllTiles(Cons<Tile> fn) {
         Tile[][] tiles = world.getTiles();
-        for (int x = 0; x < tiles.length; x++) {
-            for (int y = 0; y < tiles[x].length; y++) {
-                fn.get(tiles[x][y]);
+        for (Tile[] tile : tiles) {
+            for (Tile value : tile) {
+                fn.get(value);
             }
         }
     }

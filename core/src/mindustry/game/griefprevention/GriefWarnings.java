@@ -2,44 +2,34 @@ package mindustry.game.griefprevention;
 
 import arc.Core;
 import arc.Events;
-import arc.graphics.Color;
+import arc.util.Log;
 import arc.math.Mathf;
 import arc.struct.Array;
-import arc.util.Log;
-import mindustry.content.Blocks;
-import mindustry.content.Items;
-import mindustry.content.Liquids;
-import mindustry.entities.type.Player;
-import mindustry.entities.type.Unit;
-import mindustry.game.EventType.DepositEvent;
-import mindustry.game.EventType.ResetEvent;
-import mindustry.game.EventType.TileChangeEvent;
-import mindustry.game.EventType.WithdrawEvent;
+import arc.graphics.Color;
+
+import mindustry.world.*;
 import mindustry.gen.Call;
-import mindustry.net.Administration.TraceInfo;
-import mindustry.net.Packets.AdminAction;
 import mindustry.type.Item;
-import mindustry.world.Block;
-import mindustry.world.Tile;
-import mindustry.world.blocks.distribution.Sorter;
-import mindustry.world.blocks.power.ItemLiquidGenerator;
-import mindustry.world.blocks.power.NuclearReactor;
-import mindustry.world.blocks.power.PowerGraph;
-import mindustry.world.blocks.power.PowerNode;
-import mindustry.world.blocks.sandbox.ItemSource;
-import mindustry.world.blocks.sandbox.LiquidSource;
-import mindustry.world.blocks.storage.StorageBlock;
-import mindustry.world.blocks.storage.Unloader;
-import mindustry.world.blocks.storage.Vault;
+import mindustry.content.*;
+import mindustry.entities.type.*;
+import mindustry.game.EventType.*;
+import mindustry.world.blocks.power.*;
+import mindustry.world.blocks.sandbox.*;
+import mindustry.world.blocks.storage.*;
+import mindustry.net.Packets.AdminAction;
+import mindustry.world.blocks.distribution.*;
+import mindustry.net.Administration.TraceInfo;
 
 import static mindustry.Vars.*;
 import static mindustry.Vars.player;
 
-import java.time.Instant;
+import arc.util.Interval;
 import java.util.WeakHashMap;
 
 public class GriefWarnings {
-    private Instant nextWarningTime = Instant.now();
+    private final Interval nextWarningTime = new Interval(2);
+    private String lastSentMessage = "";
+
     public WeakHashMap<Tile, TileInfo> tileInfo = new WeakHashMap<>();
     public WeakHashMap<Player, PlayerStats> playerStats = new WeakHashMap<>();
     /** whether or not to send warnings to all players */
@@ -67,7 +57,7 @@ public class GriefWarnings {
     public boolean generatorCloseToCoreWarning = true;
 
     public boolean explosiveItemTransfer = true;
-    public boolean thoriumToReactorTranser = true;
+    public boolean thoriumToReactorTransfer = true;
 
     public boolean powerSplitLog = true;
 
@@ -110,7 +100,7 @@ public class GriefWarnings {
         generatorCloseToCoreWarning = Core.settings.getBool("griefwarnings.generatorCloseToCoreWarning", true);
 
         explosiveItemTransfer = Core.settings.getBool("griefwarnings.explosiveItemTransfer", true);
-        thoriumToReactorTranser = Core.settings.getBool("griefwarnings.thoriumToReactorTranser", true);
+        thoriumToReactorTransfer = Core.settings.getBool("griefwarnings.thoriumToReactorTransfer", true);
 
         powerSplitLog = Core.settings.getBool("griefwarnings.powerSplitLog", true);
 
@@ -139,7 +129,7 @@ public class GriefWarnings {
         Core.settings.put("griefwarnings.generatorCloseToCoreWarning", generatorCloseToCoreWarning);
 
         Core.settings.put("griefwarnings.explosiveItemTransfer", explosiveItemTransfer);
-        Core.settings.put("griefwarnings.thoriumToReactorTranser", thoriumToReactorTranser);
+        Core.settings.put("griefwarnings.thoriumToReactorTransfer", thoriumToReactorTransfer);
 
         Core.settings.put("griefwarnings.powerSplitLog", powerSplitLog);
 
@@ -150,6 +140,11 @@ public class GriefWarnings {
 
     public boolean sendMessage(String message, boolean throttled) {
         // if (!net.active()) return false;
+        if (lastSentMessage.equals(message) && !nextWarningTime.get(1, 60 * 30)) {
+            return false;
+        } else {
+            lastSentMessage = "";
+        }
 
         if (message.length() > maxTextLength) {
             if (oversizeMessageWarning) {
@@ -163,13 +158,19 @@ public class GriefWarnings {
             return false;
         }
 
-        if (!Instant.now().isAfter(nextWarningTime) && throttled) return false;
+        if (!nextWarningTime.get(0, 60) && throttled) return false;
 
-        nextWarningTime = Instant.now().plusSeconds(1);
-        if (broadcast) Call.sendChatMessage(message);
+        if (broadcast) {
+            Call.sendChatMessage(message);
 
-        else if (net.client()) ui.chatfrag.addMessage(message, null);
-        else if (net.server()) Log.info("[antigrief] " + message);
+        } else if (net.client()) {
+            ui.chatfrag.addMessage(message, null);
+
+        } else if (net.server()) {
+            Log.info("[antigrief] " + message);
+
+        }
+        lastSentMessage = message;
 
         return true;
     }
@@ -431,7 +432,7 @@ public class GriefWarnings {
         action.amount = amount;
         actionLog.add(action);
 
-        if (item.equals(Items.thorium) && tile.block() instanceof NuclearReactor && thoriumToReactorTranser) {
+        if (item.equals(Items.thorium) && tile.block() instanceof NuclearReactor && thoriumToReactorTransfer) {
             String message = "[scarlet]WARNING[] " + targetPlayer.name + "[white] ([stat]#" + targetPlayer.id + "[]) transfers [accent]" + amount + "[] thorium to a reactor. " + formatTile(tile);
             sendMessage(message);
 
@@ -630,7 +631,9 @@ public class GriefWarnings {
 
             sendMessage(message, false);
             return true;
-        } else return false;
+        }
+
+        return false;
     }
 
     public TileInfo getTileInfo(Tile tile) {
@@ -649,8 +652,6 @@ public class GriefWarnings {
 
     /**
      * AdminAction trace result hook
-     * @param target
-     * @param info
      * @return True if trace result ui should be inhibited, false otherwise
      */
     public boolean handleTraceResult(Player target, TraceInfo info) {

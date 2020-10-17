@@ -4,21 +4,15 @@ import arc.Core;
 import arc.struct.Queue;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
-import arc.util.Interval;
-import arc.util.Time;
-import arc.util.Tmp;
+import arc.util.*;
+
 import mindustry.content.Blocks;
 import mindustry.entities.traits.BuilderTrait;
 import mindustry.entities.traits.BuilderTrait.BuildRequest;
-import mindustry.entities.type.Player;
-import mindustry.entities.type.SolidEntity;
-import mindustry.entities.type.TileEntity;
-import mindustry.entities.type.Unit;
+import mindustry.entities.type.*;
 import mindustry.gen.Call;
 import mindustry.input.Binding;
-import mindustry.type.Item;
-import mindustry.type.ItemStack;
-import mindustry.type.ItemType;
+import mindustry.type.*;
 import mindustry.world.Tile;
 import mindustry.world.blocks.sandbox.ItemSource.ItemSourceEntity;
 import mindustry.world.modules.ItemModule;
@@ -71,15 +65,20 @@ public class Auto {
             Field playerMovementField = playerClass.getDeclaredField("movement");
             playerMovementField.setAccessible(true);
             movement = (Vec2)playerMovementField.get(player);
-        } catch (NoSuchFieldException | IllegalAccessException ex) {
+        } catch (NoSuchFieldException ignored) {
+            throw new RuntimeException("reflective access failed on Player.movement");
+        } catch (IllegalAccessException ignored) {
             throw new RuntimeException("reflective access failed on Player.movement");
         }
+
         try {
             Class<SolidEntity> solidEntityClass = SolidEntity.class;
             Field playerVelocityField = solidEntityClass.getDeclaredField("velocity");
             playerVelocityField.setAccessible(true);
             velocity = (Vec2)playerVelocityField.get(player);
-        } catch (NoSuchFieldException | IllegalAccessException ex) {
+        } catch (NoSuchFieldException ignored) {
+            throw new RuntimeException("reflective access failed on SolidEntity.velocity");
+        } catch (IllegalAccessException ignored) {
             throw new RuntimeException("reflective access failed on SolidEntity.velocity");
         }
 

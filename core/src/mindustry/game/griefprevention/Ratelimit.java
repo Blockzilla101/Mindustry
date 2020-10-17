@@ -2,19 +2,16 @@ package mindustry.game.griefprevention;
 
 import arc.Core;
 import arc.func.Cons;
-
-import java.time.Instant;
+import arc.util.Interval;
 
 /** Simple ratelimit */
 public class Ratelimit {
-    public int eventLimit = 10;
-    public int findTime = 1000;
-    public Instant begin = Instant.now();
+    public int eventLimit;
+    public int findTime;
+    public Interval begin = new Interval();
     public int count = 0;
 
     private boolean noUpdate = false;
-
-    public Ratelimit() {}
 
     /**
      * The constructor
@@ -28,12 +25,9 @@ public class Ratelimit {
 
     /**
      * Helper to update begin time
-     * @return True if in new interval, false otherwise
      */
     private void updateBegin() {
-        if (Instant.now().isAfter(begin.plusMillis(findTime)) && !noUpdate) {
-            // new interval
-            begin = Instant.now();
+        if (!begin.get(((float)findTime / 1000) * 60) && !noUpdate) {
             count = 0;
         }
     }

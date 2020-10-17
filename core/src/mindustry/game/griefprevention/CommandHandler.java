@@ -1,26 +1,22 @@
 package mindustry.game.griefprevention;
 
 import arc.Core;
-import arc.math.geom.Vec2;
-import arc.struct.Array;
+import arc.util.*;
+import arc.struct.*;
 import arc.func.Cons;
-import arc.util.Log;
-import mindustry.entities.type.Player;
-import mindustry.game.griefprevention.Actions.Action;
-import mindustry.game.griefprevention.Actions.TileAction;
-import mindustry.game.griefprevention.Actions.UndoResult;
+import arc.math.geom.Vec2;
+
+import mindustry.world.*;
 import mindustry.gen.Call;
-import mindustry.net.Packets.AdminAction;
 import mindustry.type.Item;
-import mindustry.world.Block;
-import mindustry.world.Tile;
+import mindustry.entities.type.Player;
 import mindustry.world.blocks.BlockPart;
-import org.mozilla.javascript.*;
+import mindustry.net.Packets.AdminAction;
+import mindustry.game.griefprevention.Actions.*;
 
 import static mindustry.Vars.*;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -34,10 +30,7 @@ public class CommandHandler {
         }
     }
 
-    public ContextFactory scriptContextFactory = new ContextFactory();
-    public Context scriptContext;
-    public Scriptable scriptScope;
-    public HashMap<String, Cons<CommandContext>> commands = new HashMap<>();
+    public ObjectMap<String, Cons<CommandContext>> commands = new ObjectMap<>();
 
     public CommandHandler() {
         addCommand("fixpower", this::fixPower);
@@ -55,51 +48,15 @@ public class CommandHandler {
         addCommand("autoban", settingsToggle("autoban", "automatic bans", v -> griefWarnings.autoban = v));
         addCommand("autotrace", settingsToggle("autotrace", "automatic trace", v -> griefWarnings.autotrace = v));
         addCommand("auto", this::auto);
-        addCommand("nextwave", this::nextwave);
+        addCommand("nextwave", this::nextWave);
         addCommand("playerinfo", this::playerInfo);
         addCommand("pi", this::playerInfo); // playerinfo takes too long to type
         addCommand("eval", this::eval);
         addCommand("freecam", createToggle("freecam", "free movement of camera", v -> griefWarnings.auto.setFreecam(v)));
         addCommand("show", this::show);
         addCommand("logactions", settingsToggle("logactions", "log all actions captured by the action log", v -> griefWarnings.logActions = v));
-        addCommand("getactions", this::getactions);
-        addCommand("undoactions", this::undoactions);
-
-        // mods context not yet initialized here
-        scriptContext = scriptContextFactory.enterContext();
-        scriptContext.setOptimizationLevel(9);
-        scriptContext.getWrapFactory().setJavaPrimitiveWrap(false);
-        scriptScope = new ImporterTopLevel(scriptContext);
-
-        try {
-            scriptContext.evaluateString(scriptScope, Core.files.internal("scripts/global.js").readString(), "global.js", 1, null);
-        } catch (Throwable ex) {
-            Log.err("global.js load failed", ex);
-        } finally {
-            Context.exit();
-        }
-    }
-
-    public String runConsole(String text) {
-        Context prevContext = Context.getCurrentContext();
-        if (prevContext != null) Context.exit();
-        Context ctx = scriptContextFactory.enterContext(scriptContext);
-        try {
-            Object o = ctx.evaluateString(scriptScope, text, "console.js", 1, null);
-            if(o instanceof NativeJavaObject){
-                o = ((NativeJavaObject)o).unwrap();
-            }
-            if(o instanceof Undefined){
-                o = "undefined";
-            }
-            return String.valueOf(o);
-        } catch(Throwable t) {
-            Log.err("Script error", t);
-            return t.toString();
-        } finally {
-            Context.exit();
-            if (prevContext != null) platform.enterScriptContext(prevContext);
-        }
+        addCommand("getactions", this::getActions);
+        addCommand("undoactions", this::undoActions);
     }
 
     public void addCommand(String name, Cons<CommandContext> handler) {
@@ -210,7 +167,7 @@ public class CommandHandler {
             for (String line : out) griefWarnings.sendMessage(line, false);
         } else {
             reply("====================");
-            reply(String.join("\n", out));
+            reply(Strings.join("\n", out));
         }
     }
 
@@ -239,7 +196,7 @@ public class CommandHandler {
 
     /** Get information about a player */
     public void playerInfo(CommandContext ctx) {
-        String name = String.join(" ", ctx.args.subList(1, ctx.args.size()));
+        String name = Strings.join(" ", ctx.args.subList(1, ctx.args.size()));
         PlayerStats stats = getStats(name);
         if (stats == null) {
             reply("[scarlet]Not found");
@@ -335,7 +292,7 @@ public class CommandHandler {
 
     /** Votekick overlay to allow /votekick using ids when prefixed by # */
     public void votekick(CommandContext ctx) {
-        String name = String.join(" ", ctx.args.subList(1, ctx.args.size())).toLowerCase();
+        String name = Strings.join(" ", ctx.args.subList(1, ctx.args.size())).toLowerCase();
         Player target = getPlayer(name);
         if (target == null) {
             reply("[scarlet]Player not found!");
@@ -418,7 +375,7 @@ public class CommandHandler {
                         distance = 50f;
                         break;
                 }
-                String name = String.join(" ", ctx.args.subList(nameStart, ctx.args.size()));
+                String name = Strings.join(" ", ctx.args.subList(nameStart, ctx.args.size()));
                 Player target = getPlayer(name);
                 if (target == null) {
                     reply("[scarlet]No such player");
@@ -537,7 +494,7 @@ public class CommandHandler {
         }
     }
 
-    public void nextwave(CommandContext ctx) {
+    public void nextWave(CommandContext ctx) {
         if (!player.isAdmin) {
             reply("not admin!");
             return;
@@ -556,8 +513,7 @@ public class CommandHandler {
     }
 
     public void eval(CommandContext ctx) {
-        String code = String.join(" ", ctx.args.subList(1, ctx.args.size()));
-        reply(runConsole(code));
+        Core.app.post(() -> reply(mods.getScripts().runConsole(Strings.join(" ", ctx.args.subList(1, ctx.args.size())))));
     }
 
     /** Switch to freecam and focus on an object */
@@ -576,7 +532,7 @@ public class CommandHandler {
             }
         }
 
-        String name = String.join(" ", ctx.args.subList(1, ctx.args.size()));
+        String name = Strings.join(" ", ctx.args.subList(1, ctx.args.size()));
         Player target = getPlayer(name);
         if (target == null) {
             reply("Target does not exist");
@@ -588,7 +544,7 @@ public class CommandHandler {
     }
 
     /** Show action logs relevant to tile or player */
-    public void getactions(CommandContext ctx) {
+    public void getActions(CommandContext ctx) {
         if (ctx.args.size() < 2) {
             reply("No target given");
             return;
@@ -607,7 +563,7 @@ public class CommandHandler {
             }
         }
 
-        String name = String.join(" ", ctx.args.subList(1, ctx.args.size()));
+        String name = Strings.join(" ", ctx.args.subList(1, ctx.args.size()));
         Player target = getPlayer(name);
         if (target == null) {
             reply("Target does not exist");
@@ -621,7 +577,7 @@ public class CommandHandler {
     }
 
     /** Undo actions of player */
-    public void undoactions(CommandContext ctx) {
+    public void undoActions(CommandContext ctx) {
         if (ctx.args.size() < 2) {
             reply("No target given");
             return;
@@ -637,7 +593,7 @@ public class CommandHandler {
         }
 
         int argStart = count > -1 ? 2 : 1;
-        String name = String.join(" ", ctx.args.subList(argStart, ctx.args.size()));
+        String name = Strings.join(" ", ctx.args.subList(argStart, ctx.args.size()));
         Player target = getPlayer(name);
         if (target == null) {
             reply("Invalid target");

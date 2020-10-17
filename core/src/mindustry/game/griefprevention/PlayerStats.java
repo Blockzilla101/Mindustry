@@ -44,6 +44,8 @@ public class PlayerStats {
     public void handleTrace(TraceInfo info) {
         trace = info;
         autoTraceRequested = false;
-        traceListeners.forEach(r -> r.get(info));
+        for (int i = 0; i < traceListeners.size; i++) {
+            traceListeners.get(i).get(info);
+        }
     }
 }

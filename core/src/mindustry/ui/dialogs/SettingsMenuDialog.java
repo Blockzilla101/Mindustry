@@ -404,8 +404,8 @@ public class SettingsMenuDialog extends SettingsDialog{
             griefWarnings.saveSettings();
         });
 
-        antiGrief.checkPref("thoriumToReactorTranser", griefWarnings.thoriumToReactorTranser, b -> {
-            griefWarnings.thoriumToReactorTranser = b;
+        antiGrief.checkPref("thoriumToReactorTranser", griefWarnings.thoriumToReactorTransfer, b -> {
+            griefWarnings.thoriumToReactorTransfer = b;
             griefWarnings.saveSettings();
         });
 
