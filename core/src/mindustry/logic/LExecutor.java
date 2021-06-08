@@ -469,6 +469,7 @@ public class LExecutor{
                                 } else {
                                     AntiGrief.sendMessage(Strings.format("@[white] @ a [accent]potential logic virus[] at (@, @)", lastInfo.player.name, lastInfo.interaction == TileInfos.InteractionType.configured ? "has configured" : "has built", lastInfo.x, lastInfo.y), Color.brick);
                                 }
+                                break;
                             }
                             ai.plan.set(x, y, rot, block);
                             ai.plan.config = conf instanceof Content c ? c : conf instanceof Building b ? b : null;
