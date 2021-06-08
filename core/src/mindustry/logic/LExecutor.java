@@ -1,12 +1,14 @@
 package mindustry.logic;
 
 import arc.*;
+import arc.graphics.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.noise.*;
 import mindustry.*;
 import mindustry.ai.types.*;
+import mindustry.antigrief.*;
 import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.ctype.*;
@@ -460,6 +462,14 @@ public class LExecutor{
                             }
 
                             var conf = exec.obj(p5);
+                            if (antiGrief.logicVirusWarn && conf instanceof LogicBlock.LogicBuild) {
+                                var lastInfo = antiGrief.tileInfos.getLast(x, y);
+                                if (lastInfo == null) {
+                                    AntiGrief.sendMessage(Strings.format("[accent]potential logic virus[] being built at (@, @)", x, y), Color.brick);
+                                } else {
+                                    AntiGrief.sendMessage(Strings.format("@[white] @ a [accent]potential logic virus[] at (@, @)", lastInfo.player.name, lastInfo.interaction == TileInfos.InteractionType.configured ? "has configured" : "has built", lastInfo.x, lastInfo.y), Color.brick);
+                                }
+                            }
                             ai.plan.set(x, y, rot, block);
                             ai.plan.config = conf instanceof Content c ? c : conf instanceof Building b ? b : null;
 

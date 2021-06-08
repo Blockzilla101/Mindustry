@@ -57,7 +57,6 @@ public class BlockHandler{
             }
         }
 
-        if (antiGrief.logicVirusWarn && tile.build instanceof LogicBlock.LogicBuild) checkLogicVirus(((LogicBlock.LogicBuild)tile.build).code.toLowerCase(), info);
         antiGrief.tileInfos.add(info, tile);
     }
 
@@ -70,7 +69,6 @@ public class BlockHandler{
         var info = new TileInfo(tile.block(), tile.x, tile.y, tile.build.rotation, config, InteractionType.configured, new SemiPlayer(p.name(), p.id));
         var lastInfo = antiGrief.tileInfos.getLast(tile);
 
-        if (antiGrief.logicVirusWarn && tile.build instanceof LogicBlock.LogicBuild) checkLogicVirus(((LogicBlock.LogicBuild)tile.build).code.toLowerCase(), info);
         // don't add if it was reconfiguring of the same block by the same player
         if (lastInfo != null && lastInfo.block == info.block && lastInfo.interaction == info.interaction && lastInfo.player.id == info.player.id) {
             // spam clicking power nodes / messed up mess driver / changing small things in logic blocks within 20 secs
@@ -125,13 +123,6 @@ public class BlockHandler{
 
 //        if (lastInfo != null && lastInfo.block == info.block && lastInfo.interaction == info.interaction && lastInfo.player.id == info.player.id) return;
         antiGrief.tileInfos.add(info, tile);
-    }
-
-    private final Pattern p = Pattern.compile("ucontrol build [0-9a-zA-Z-@]+ [0-9a-zA-Z-@]+ @((micro)|(logic)|(hyper))-processor [0-9] @this");
-    public void checkLogicVirus(String code, TileInfo info) {
-        if (code.contains("ubind @") && p.matcher(code).find()) {
-            AntiGrief.sendMessage(Strings.format("@[white] @ a [accent]potential logic virus[] at (@, @)", info.player.name, info.interaction == InteractionType.configured ? "has configured" : "has built", info.x, info.y), Color.brick);
-        }
     }
 
     private void register() {
