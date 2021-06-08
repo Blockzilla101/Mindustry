@@ -464,10 +464,10 @@ public class LExecutor{
                             var conf = exec.obj(p5);
                             if (antiGrief.logicVirusWarn && conf instanceof LogicBlock.LogicBuild) {
                                 var lastInfo = antiGrief.tileInfos.getLast(x, y);
-                                if (lastInfo == null) {
-                                    AntiGrief.sendMessage(Strings.format("[accent]potential logic virus[] being built at (@, @)", x, y), Color.brick);
-                                } else {
+                                if (lastInfo != null) {
                                     AntiGrief.sendMessage(Strings.format("@[white] @ a [accent]potential logic virus[] at (@, @)", lastInfo.player.name, lastInfo.interaction == TileInfos.InteractionType.configured ? "has configured" : "has built", lastInfo.x, lastInfo.y), Color.brick);
+                                } else {
+//                                    AntiGrief.sendMessage(Strings.format("[accent]potential logic virus[] being built at (@, @)", x, y), Color.brick);
                                 }
                                 break;
                             }
