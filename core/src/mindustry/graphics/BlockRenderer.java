@@ -171,6 +171,7 @@ public class BlockRenderer{
 
             darkEvents.each(pos -> {
                 var tile = world.tile(pos);
+                if(tile == null) return;
                 float darkness = world.getDarkness(tile.x, tile.y);
                 //then draw the shadow
                 Draw.colorl(darkness <= 0f ? 1f : 1f - Math.min((darkness + 0.5f) / 4f, 1f));
@@ -345,7 +346,7 @@ public class BlockRenderer{
                         Draw.z(Layer.block);
                     }
 
-                    if(renderer.drawStatus && block.consumes.any()){
+                    if(entity.team == player.team() && renderer.drawStatus && block.consumes.any()){
                         entity.drawStatus();
                     }
                 }
