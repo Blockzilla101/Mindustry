@@ -32,7 +32,7 @@ public class BlockHandler{
             return;
         }
 
-        var info = new TileInfo(null, tile.x, tile.y, tile.build.rotation, tile.build.config(), removing ? InteractionType.removed : rotated ? InteractionType.rotated : InteractionType.built, new SemiPlayer(unit.getPlayer().name(), unit.getPlayer().id));
+        var info = new TileInfo(null, tile.x, tile.y, tile.build.rotation, tile.build.config(), removing ? InteractionType.broke : rotated ? InteractionType.rotated : InteractionType.built, new SemiPlayer(unit.getPlayer().name(), unit.getPlayer().id));
         var lastInfo = antiGrief.tileInfos.getLast(tile);
 
         // set the block

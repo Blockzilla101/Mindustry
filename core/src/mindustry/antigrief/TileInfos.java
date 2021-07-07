@@ -93,7 +93,7 @@ public class TileInfos{
         infos.each((loc, infos2) -> {
             var nth = nthDeconstructed;
             for(int i = infos2.size - 1; i >= 0; i--){
-                if (infos2.get(i).interaction == InteractionType.removed || infos2.get(i).interaction == InteractionType.picked_up) {
+                if (infos2.get(i).interaction == InteractionType.broke || infos2.get(i).interaction == InteractionType.picked_up) {
                     if (nth != 0){
                         nth--;
                     } else {
@@ -251,6 +251,6 @@ public class TileInfos{
     }
 
     public enum InteractionType {
-        built, removed, configured, rotated, picked_up, dropped
+        built, broke, configured, rotated, picked_up, dropped
     }
 }
