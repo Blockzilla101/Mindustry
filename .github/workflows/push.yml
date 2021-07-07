@@ -15,9 +15,9 @@ jobs:
     - name: Trigger BE build
       if: ${{ github.repository == 'Blockzilla101/Mindustry' }}
       run: |
-        git clone --depth=1 --branch=master https://github.com/Blockzilla101/MindustryBuilds ../MindustryBuilds
+        git clone --depth=1 --tags --branch=master https://github.com/Blockzilla101/MindustryBuilds ../MindustryBuilds
         cd ../MindustryBuilds
-        version=$(( `git tag --sort=committerdate | tail -1` + 1 ))
+        version=$(( `git tag --list | wc --lines` + 183 ))
         echo "BE Version = ${version}"
         git tag ${version}
         git config --global user.name "Build Uploader"
