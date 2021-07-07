@@ -31,7 +31,7 @@ public class BlockHandler{
         if (tile.build == null && tile.block() == Blocks.air) {
             var lastInfo = antiGrief.tileInfos.getLast(tile);
             if (removing && lastInfo != null && lastInfo.interaction == InteractionType.built) {
-                var info = new TileInfo(null, tile.x, tile.y, 0, null, InteractionType.broke, new SemiPlayer(unit.getPlayer().name(), unit.getPlayer().id));
+                var info = new TileInfo(lastInfo.block, tile.x, tile.y, 0, null, InteractionType.broke, new SemiPlayer(unit.getPlayer().name(), unit.getPlayer().id));
                 antiGrief.tileInfos.add(info, tile);
                 return;
             }
@@ -66,7 +66,7 @@ public class BlockHandler{
 
         if (/* antiGrief.incineratorWarn && */ info.interaction == InteractionType.built && info.block instanceof Incinerator) {
             var closetCore = unit.closestCore();
-            if (Mathf.dst(info.x, info.y, closetCore.tile.x, closetCore.tile.y) < 5)
+            if (Mathf.dst(info.x, info.y, closetCore.tile.x, closetCore.tile.y) < 5) {
                 AntiGrief.sendMessage(Strings.format("@[white] is building an [accent]incinerator[] at (@, @) @ blocks away from core", info.player.name, info.x, info.y, Mathf.round(Mathf.dst(info.x, info.y, closetCore.tile.x, closetCore.tile.y))), Color.yellow);
             }
         }
