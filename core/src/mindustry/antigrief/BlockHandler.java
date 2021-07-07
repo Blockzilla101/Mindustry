@@ -16,6 +16,7 @@ import mindustry.world.blocks.power.*;
 import mindustry.world.blocks.sandbox.*;
 import mindustry.world.blocks.ConstructBlock.*;
 import mindustry.world.blocks.distribution.*;
+import mindustry.world.blocks.production.*;
 
 import java.util.regex.*;
 
@@ -28,7 +29,13 @@ public class BlockHandler{
 
     public void blockChange(Unit unit, Tile tile, boolean rotated, boolean removing) {
         if (tile.build == null && tile.block() == Blocks.air) {
-            Log.warn(Strings.format("Skipping tile (@, @) change log as tile.build is null and block is air | sandbox = @ | block = @ | removing = @", tile.x, tile.y, state.rules.infiniteResources, rotated, removing));
+            var lastInfo = antiGrief.tileInfos.getLast(tile);
+            if (removing && lastInfo != null && lastInfo.interaction == InteractionType.built) {
+                var info = new TileInfo(null, tile.x, tile.y, 0, null, InteractionType.broke, new SemiPlayer(unit.getPlayer().name(), unit.getPlayer().id));
+                antiGrief.tileInfos.add(info, tile);
+                return;
+            }
+            Log.warn(Strings.format("Skipping tile (@, @) change log as tile.build is null and block is air | sandbox = @ | rotated = @ | removing = @", tile.x, tile.y, state.rules.infiniteResources, rotated, removing));
             return;
         }
 
@@ -54,6 +61,13 @@ public class BlockHandler{
             var closetCore = unit.closestCore();
             if (Mathf.dst(info.x, info.y, closetCore.tile.x, closetCore.tile.y) < ((NuclearReactor)info.block).explosionRadius + info.block.size + closetCore.block.size) {
                 AntiGrief.sendMessage(Strings.format("@[white] is building a [accent]reactor[] at (@, @) @ blocks away from core", info.player.name, info.x, info.y, Mathf.round(Mathf.dst(info.x, info.y, closetCore.tile.x, closetCore.tile.y))), Color.brick);
+            }
+        }
+
+        if (/* antiGrief.incineratorWarn && */ info.interaction == InteractionType.built && info.block instanceof Incinerator) {
+            var closetCore = unit.closestCore();
+            if (Mathf.dst(info.x, info.y, closetCore.tile.x, closetCore.tile.y) < 5)
+                AntiGrief.sendMessage(Strings.format("@[white] is building an [accent]incinerator[] at (@, @) @ blocks away from core", info.player.name, info.x, info.y, Mathf.round(Mathf.dst(info.x, info.y, closetCore.tile.x, closetCore.tile.y))), Color.yellow);
             }
         }
 
