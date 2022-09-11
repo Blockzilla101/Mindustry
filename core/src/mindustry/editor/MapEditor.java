@@ -77,6 +77,7 @@ public class MapEditor{
         Vars.rules = rules == null ? new MapRules() : rules;
         tags.put("bomberman-rules", JsonIO.write(Vars.rules));
         Grid.reset();
+        Grid.recalculateChunks();
     }
 
     public void unloadBomberman() {
@@ -351,6 +352,7 @@ public class MapEditor{
         }
 
         renderer.resize(width, height);
+        if (isBomberman) Grid.recalculateChunks();
         loading = false;
     }
 

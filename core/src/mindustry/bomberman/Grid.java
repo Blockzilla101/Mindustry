@@ -58,6 +58,41 @@ public class Grid{
         return center(0, y)[1];
     }
 
+    public static int unpackX(int xy){
+        return (short)(xy >>> 16);
+    }
+
+    public static int unpackY(int xy){
+        return (short)(xy & 0xFFFF);
+    }
+
+    public static void recalculateChunks(){
+        GPos.chunks.clear();
+        for(int x = rules.xOffset; x < editor.width(); x += size){
+            for(int y = rules.yOffset; y < editor.height(); y += size){
+                var chunk = new GPos(centerX(x), centerY(y));
+                GPos.chunks.put(chunk.packed(), chunk);
+            }
+        }
+    }
+
+    public static void moveMarkedChunks(int deltaX, int deltaY, IntSeq markedChunks){
+        var temp = new IntSeq();
+        markedChunks.each(pos -> temp.add(Point2.pack(unpackX(pos) + deltaX, unpackY(pos) + deltaY)));
+        markedChunks.clear();
+        markedChunks.addAll(temp);
+    }
+
+    public static void moveAllMarkedChunks(int deltaX, int deltaY){
+        moveMarkedChunks(deltaX, deltaY, rules.unbreakable);
+        moveMarkedChunks(deltaX, deltaY, rules.playableRegion);
+        moveMarkedChunks(deltaX, deltaY, rules.endGameRegion);
+        moveMarkedChunks(deltaX, deltaY, rules.endGameRegionWalls);
+        moveMarkedChunks(deltaX, deltaY, rules.midGameClearChunks);
+        moveMarkedChunks(deltaX, deltaY, rules.midGameBreakableChunks);
+        moveMarkedChunks(deltaX, deltaY, rules.safeChunks);
+    }
+
     /**
      * @param chunk The chunk to start walking from
      * @param range Maximum number of chunks to walk in each direction

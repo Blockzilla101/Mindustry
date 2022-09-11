@@ -44,6 +44,10 @@ public class GridSettingsDialog extends BaseDialog{
             invert = prevInvert;
             hide();
         });
-        buttons.button("@ok", this::hide);
+
+        buttons.button("@ok", () -> {
+            Grid.moveAllMarkedChunks(Vars.rules.xOffset - prevXOffset, Vars.rules.yOffset - prevYOffset);
+            hide();
+        });
     }
 }
