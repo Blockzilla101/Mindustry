@@ -11,6 +11,7 @@ import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
+import mindustry.bomberman.*;
 import mindustry.graphics.*;
 import mindustry.input.*;
 import mindustry.ui.*;
@@ -240,6 +241,8 @@ public class MapView extends Element implements GestureListener{
         float centery = y + height / 2 + offsety * zoom;
 
         image.setImageSize(editor.width(), editor.height());
+        Vars.gridImage.setImageSize(editor.width(), editor.height());
+        Vars.regionImage.setImageSize(editor.width(), editor.height());
 
         if(!ScissorStack.push(rect.set(x + Core.scene.marginLeft, y + Core.scene.marginBottom, width, height))){
             return;
@@ -268,6 +271,20 @@ public class MapView extends Element implements GestureListener{
             Lines.line(centerx - sclwidth/2f, centery, centerx + sclwidth/2f, centery);
             Lines.line(centerx, centery - sclheight/2f, centerx, centery + sclheight/2f);
 
+            Draw.reset();
+        }
+
+        if(EditorState.gridEnabled && editor.isBomberman){
+            Draw.color(Color.gray);
+            Vars.gridImage.setBounds(centerx - sclwidth / 2, centery - sclheight / 2, sclwidth, sclheight);
+            Vars.gridImage.draw();
+            Draw.reset();
+        }
+
+        if(EditorState.renderRegions && editor.isBomberman){
+            Draw.color(Color.gray);
+            Vars.regionImage.setBounds(centerx - sclwidth / 2, centery - sclheight / 2, sclwidth, sclheight);
+            Vars.regionImage.draw();
             Draw.reset();
         }
 

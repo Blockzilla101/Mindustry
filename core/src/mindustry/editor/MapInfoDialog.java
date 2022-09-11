@@ -100,6 +100,18 @@ public class MapInfoDialog extends BaseDialog{
             description.change();
             author.change();
 
+            description.changed(() -> {
+                //user changed the map to bomberman
+                if (description.getText().contains("{gamemode:bomberman}") && !editor.isBomberman) {
+                    editor.loadBomberman(null);
+                }
+
+                //map was turned back into normal
+                if (!description.getText().contains("{gamemode:bomberman}") && editor.isBomberman) {
+                    editor.unloadBomberman();
+                }
+            });
+
             t.margin(16f);
         });
     }

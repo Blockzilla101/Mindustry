@@ -6,6 +6,8 @@ import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
+import arc.util.*;
+import mindustry.bomberman.*;
 import mindustry.content.*;
 import mindustry.editor.DrawOperation.*;
 import mindustry.entities.units.*;
@@ -16,12 +18,15 @@ import mindustry.maps.*;
 import mindustry.world.*;
 
 import static mindustry.Vars.*;
+import static mindustry.bomberman.Vars.rules;
 
 public class MapEditor{
     public static final float[] brushSizes = {1, 1.5f, 2, 3, 4, 5, 9, 15, 20};
 
     public StringMap tags = new StringMap();
     public MapRenderer renderer = new MapRenderer();
+
+    public boolean isBomberman = false;
 
     private final Context context = new Context();
     private OperationStack stack = new OperationStack();
@@ -54,9 +59,26 @@ public class MapEditor{
         if(map.file.parent().parent().name().equals("1127400") && steam){
             tags.put("steamid",  map.file.parent().name());
         }
+
+        Vars.reset();
+        if(map.tags.containsKey("bomberman-rules")) loadBomberman(JsonIO.read(MapRules.class, map.tags.get("bomberman-rules")));
+
         load(() -> MapIO.loadMap(map, context));
         renderer.resize(width(), height());
         loading = false;
+    }
+
+    public void loadBomberman(@Nullable MapRules rules) {
+        isBomberman = true;
+        Vars.rules = rules == null ? new MapRules() : rules;
+        tags.put("bomberman-rules", JsonIO.write(Vars.rules));
+        Grid.reset();
+    }
+
+    public void unloadBomberman() {
+        isBomberman = false;
+        tags.remove("bomberman-rules");
+        Grid.reset();
     }
 
     public void beginEdit(Pixmap pixmap){

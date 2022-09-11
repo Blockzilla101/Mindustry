@@ -15,7 +15,8 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.*;
+import mindustry.Vars;
+import mindustry.bomberman.*;
 import mindustry.content.*;
 import mindustry.core.GameState.*;
 import mindustry.game.*;
@@ -651,8 +652,12 @@ public class MapEditorDialog extends Dialog implements Disposable{
                 mid.table(t -> {
                     t.button("@editor.cliffs", Icon.terrain, Styles.flatt, editor::addCliffs).growX().margin(9f);
                 }).growX().top();
-            }).margin(0).left().growY();
 
+                mid.row();
+                mid.table(t -> t.check("Toggle Grid", (checked) -> {
+                    EditorState.gridEnabled = checked;
+                }).visible(() -> editor.isBomberman)).growX().top();
+            }).margin(0).left().growY();
 
             cont.table(t -> t.add(view).grow()).grow();
 
