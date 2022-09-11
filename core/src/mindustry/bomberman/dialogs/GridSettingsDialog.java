@@ -1,6 +1,7 @@
-package mindustry.bomberman;
+package mindustry.bomberman.dialogs;
 
 import arc.scene.ui.layout.*;
+import mindustry.bomberman.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 

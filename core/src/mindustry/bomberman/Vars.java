@@ -1,5 +1,7 @@
 package mindustry.bomberman;
 
+import mindustry.bomberman.dialogs.*;
+
 public class Vars{
     public static MapRules rules;
     public static BombermanGridImage gridImage = new BombermanGridImage(0, 0);
@@ -7,6 +9,7 @@ public class Vars{
 
     public static GridSettingsDialog gridSettingsDialog = new GridSettingsDialog();
     public static MapRulesDialog rulesDialog = new MapRulesDialog();
+    public static MarkOptionsDialog markOptions = new MarkOptionsDialog();
 
     public static void reset() {
         rules = new MapRules();

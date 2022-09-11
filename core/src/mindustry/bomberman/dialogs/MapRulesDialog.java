@@ -1,9 +1,10 @@
-package mindustry.bomberman;
+package mindustry.bomberman.dialogs;
 
 import arc.scene.ui.*;
 import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
+import mindustry.bomberman.*;
 import mindustry.bomberman.MapRules.*;
 import mindustry.content.*;
 import mindustry.gen.*;
@@ -45,9 +46,7 @@ public class MapRulesDialog extends BaseDialog{
                 t.defaults().size(140f, 50f);
                 t.button("start", style, () -> startingStage = PlayingStage.start).group(group).checked(b -> startingStage == PlayingStage.start);
                 t.button("mid", style, () -> startingStage = PlayingStage.mid).group(group).checked(b -> startingStage == PlayingStage.mid);
-                ;
                 t.button("end", style, () -> startingStage = PlayingStage.end).group(group).checked(b -> startingStage == PlayingStage.end);
-                ;
             }).fill(false).expand(false, false);
             table.row();
 

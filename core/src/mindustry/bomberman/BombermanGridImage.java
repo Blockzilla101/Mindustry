@@ -3,6 +3,8 @@ package mindustry.bomberman;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.scene.*;
+import mindustry.bomberman.*;
+
 import static mindustry.Vars.*;
 
 public class BombermanGridImage extends Element{
