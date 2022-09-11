@@ -8,11 +8,9 @@ public class MapRules{
     public int yOffset = 0;
 
     public ObjectMap<Grid.GPos, Team> spawns = new ObjectMap<>();
-    public ObjectMap<Team, Seq<Grid.GPos>> spawnsByTeam = new ObjectMap<>();
-    public IntSeq unbreakable = new IntSeq();
-
     public PlayingStage startingStage = PlayingStage.start;
 
+    public IntSeq unbreakable = new IntSeq();
     public IntSeq playableRegion = new IntSeq();
     public IntSeq endGameRegion = new IntSeq();
     public IntSeq endGameRegionWalls = new IntSeq();

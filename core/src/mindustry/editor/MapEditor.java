@@ -61,14 +61,15 @@ public class MapEditor{
         }
 
         Vars.reset();
+        load(() -> MapIO.loadMap(map, context));
+        renderer.resize(width(), height());
+
         if(map.tags.containsKey("bomberman-rules")) {
             loadBomberman(JsonIO.read(MapRules.class, map.tags.get("bomberman-rules")));
         } else if (isBomberman) {
             unloadBomberman();
         }
 
-        load(() -> MapIO.loadMap(map, context));
-        renderer.resize(width(), height());
         loading = false;
     }
 

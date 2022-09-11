@@ -44,23 +44,31 @@ public class MapRulesDialog extends BaseDialog{
 
                 t.defaults().size(140f, 50f);
                 t.button("start", style, () -> startingStage = PlayingStage.start).group(group).checked(b -> startingStage == PlayingStage.start);
-                t.button("mid", style, () -> startingStage = PlayingStage.mid).group(group).checked(b -> startingStage == PlayingStage.mid);;
-                t.button("end", style, () -> startingStage = PlayingStage.end).group(group).checked(b -> startingStage == PlayingStage.end);;
+                t.button("mid", style, () -> startingStage = PlayingStage.mid).group(group).checked(b -> startingStage == PlayingStage.mid);
+                ;
+                t.button("end", style, () -> startingStage = PlayingStage.end).group(group).checked(b -> startingStage == PlayingStage.end);
+                ;
             }).fill(false).expand(false, false);
             table.row();
 
             title("Stage Lengths");
 
-            table.label(() -> "Start Stage: [lightgray](sec)");
-            table.field(String.valueOf(startStageLength), TextFieldFilter.digitsOnly, s -> startStageLength = Strings.parseInt(s));
+            table.table(t -> {
+                t.label(() -> "Start Stage: [lightgray](sec)").expand(false, false);
+                t.field(String.valueOf(startStageLength), TextFieldFilter.digitsOnly, s -> startStageLength = Strings.parseInt(s)).expand(false, false);
+            });
             table.row();
 
-            table.label(() -> "Mid Stage: [lightgray](sec)");
-            table.field(String.valueOf(midStageLength), TextFieldFilter.digitsOnly, s -> midStageLength = Strings.parseInt(s));
+            table.table(t -> {
+                t.label(() -> "Mid Stage: [lightgray](sec)");
+                t.field(String.valueOf(midStageLength), TextFieldFilter.digitsOnly, s -> midStageLength = Strings.parseInt(s)).expand(false, false);
+            });
             table.row();
 
-            table.label(() -> "End Stage: [lightgray](sec)");
-            table.field(String.valueOf(endStageLength), TextFieldFilter.digitsOnly, s -> endStageLength = Strings.parseInt(s));
+            table.table(t -> {
+                t.label(() -> "End Stage: [lightgray](sec)").expand(false, false);
+                t.field(String.valueOf(endStageLength), TextFieldFilter.digitsOnly, s -> endStageLength = Strings.parseInt(s)).expand(false, false);
+            });
 
             cont.row();
             cont.add(table).center();

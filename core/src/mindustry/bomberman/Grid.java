@@ -19,7 +19,7 @@ import static mindustry.bomberman.Vars.*;
 
 public class Grid{
     public static int size;
-    private static int offset;
+    public static int offset;
 
     public static void init(int size){
         if(size % 2 == 0){
@@ -139,9 +139,9 @@ public class Grid{
         return chunks;
     }
 
-    public static void updatePlayableRegions(GPos chunk){
-        rules.playableRegion.add(chunk.packed());
-        var neighbours = chunk.neighbourChunks(true);
+    public static void updatePlayableRegions(GPos starter){
+        rules.playableRegion.add(starter.packed());
+        var neighbours = starter.neighbourChunks(true);
         for(var neighbour : neighbours){
             if(neighbour == null) continue;
             if(rules.unbreakable.contains(neighbour.packed()) && !rules.midGameClearChunks.contains(neighbour.packed()) && !rules.midGameBreakableChunks.contains(neighbour.packed())) continue;
@@ -150,9 +150,9 @@ public class Grid{
         }
     }
 
-    public static void updateEndGameRegion(GPos chunk){
-        rules.endGameRegion.add(chunk.packed());
-        var neighbours = chunk.neighbourChunks(true);
+    public static void updateEndGameRegion(GPos starter){
+        rules.endGameRegion.add(starter.packed());
+        var neighbours = starter.neighbourChunks(true);
         for(var neighbour : neighbours){
             if(neighbour == null) continue;
             if(!rules.playableRegion.contains(neighbour.packed())) continue;
@@ -179,8 +179,6 @@ public class Grid{
         }
 
         public int x, y;
-        /** To avoid creating double death messages */
-        public boolean hasFlame = false;
 
         public GPos(int x, int y, boolean center){
             this.x = center ? Grid.centerX(x) : x;
