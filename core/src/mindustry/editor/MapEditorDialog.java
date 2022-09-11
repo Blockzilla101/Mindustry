@@ -654,9 +654,11 @@ public class MapEditorDialog extends Dialog implements Disposable{
                 }).growX().top();
 
                 mid.row();
-                mid.table(t -> t.check("Toggle Grid", (checked) -> {
-                    EditorState.gridEnabled = checked;
-                }).visible(() -> editor.isBomberman)).growX().top();
+
+                mid.table(t -> {
+                    t.check("Toggle Grid", (checked) -> EditorState.gridEnabled = checked).visible(() -> editor.isBomberman).growX().margin(9f);
+                }).growX().top();
+
             }).margin(0).left().growY();
 
             cont.table(t -> t.add(view).grow()).grow();

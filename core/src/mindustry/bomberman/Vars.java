@@ -5,6 +5,9 @@ public class Vars{
     public static BombermanGridImage gridImage = new BombermanGridImage(0, 0);
     public static RegionGridImage regionImage = new RegionGridImage(0, 0);
 
+    public static GridSettingsDialog gridSettingsDialog = new GridSettingsDialog();
+    public static MapRulesDialog rulesDialog = new MapRulesDialog();
+
     public static void reset() {
         rules = new MapRules();
         Grid.init(3);

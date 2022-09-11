@@ -19,21 +19,22 @@ public class BombermanGridImage extends Element{
         float s = 1f;
 
         Draw.color(Color.black);
-        for(int x = 0; x <= imageWidth; x += Grid.size){
-            if(x % Grid.size != 0) continue;
+        for(int x = Vars.rules.xOffset; x <= imageWidth; x += Grid.size){
             Fill.crect((int)(this.x + xspace * x - s), y - s, 2, getHeight() + (x == imageWidth ? 1 : 0));
         }
 
-        for(int y = 0; y <= imageHeight; y += Grid.size){
-            if(y % Grid.size != 0) continue;
+        for(int y = Vars.rules.yOffset; y <= imageHeight; y += Grid.size){
             Fill.crect(x - s, (int)(this.y + y * yspace - s), getWidth(), 2);
         }
 
         Draw.color(Color.gray);
-        Draw.alpha(0.4f);
-        for(int x = 0; x < imageWidth; x += Grid.size * 2){
-            for(int y = 0; y < imageHeight; y += Grid.size * 2){
-                Fill.crect((int)(this.x + xspace * x - s + 2), (int)(this.y + y * yspace - s + 2), Grid.size * xspace - 2, Grid.size * yspace - 2);
+        Draw.alpha(0.3f);
+        for(int x = (Vars.gridSettingsDialog.invert ? Grid.size : 0) + Vars.rules.yOffset; x < imageWidth; x += Grid.size * 2){
+            for(int y = (Vars.gridSettingsDialog.invert ? Grid.size : 0) + Vars.rules.xOffset; y < imageHeight; y += Grid.size * 2){
+                var width = Grid.size * xspace - 2;
+                var height = Grid.size * yspace - 2;
+                // fixme: figure how to make the chunks not be drawn out of bounds
+                Fill.crect((int)(this.x + xspace * x - s + 2), (int)(this.y + y * yspace - s + 2), width, height);
             }
         }
     }

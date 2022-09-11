@@ -61,7 +61,11 @@ public class MapEditor{
         }
 
         Vars.reset();
-        if(map.tags.containsKey("bomberman-rules")) loadBomberman(JsonIO.read(MapRules.class, map.tags.get("bomberman-rules")));
+        if(map.tags.containsKey("bomberman-rules")) {
+            loadBomberman(JsonIO.read(MapRules.class, map.tags.get("bomberman-rules")));
+        } else if (isBomberman) {
+            unloadBomberman();
+        }
 
         load(() -> MapIO.loadMap(map, context));
         renderer.resize(width(), height());
@@ -78,7 +82,7 @@ public class MapEditor{
     public void unloadBomberman() {
         isBomberman = false;
         tags.remove("bomberman-rules");
-        Grid.reset();
+        Vars.reset();
     }
 
     public void beginEdit(Pixmap pixmap){

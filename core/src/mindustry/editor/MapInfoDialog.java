@@ -94,6 +94,28 @@ public class MapInfoDialog extends BaseDialog{
                     });
                     hide();
                 }).marginLeft(10f);
+
+                r.row();
+
+                r.button("Grid Settings", Icon.grid, style, () -> {
+                    if (!editor.isBomberman) {
+                        Menus.infoMessage("Not available outside of bomberman maps.");
+                        hide();
+                        return;
+                    }
+                    mindustry.bomberman.Vars.gridSettingsDialog.show();
+                    hide();
+                }).marginLeft(10f);
+
+                r.button("Bomberman Rules", Icon.grid, style, () -> {
+                    if (!editor.isBomberman) {
+                        Menus.infoMessage("Not available outside of bomberman maps.");
+                        hide();
+                        return;
+                    }
+                    mindustry.bomberman.Vars.rulesDialog.show();
+                    hide();
+                }).marginLeft(10f);
             }).colspan(2).center();
 
             name.change();
