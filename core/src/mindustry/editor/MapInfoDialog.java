@@ -107,7 +107,7 @@ public class MapInfoDialog extends BaseDialog{
                     hide();
                 }).marginLeft(10f);
 
-                r.button("Bomberman Rules", Icon.grid, style, () -> {
+                r.button("Bomberman Rules", Icon.list, style, () -> {
                     if (!editor.isBomberman) {
                         Menus.infoMessage("Not available outside of bomberman maps.");
                         hide();
