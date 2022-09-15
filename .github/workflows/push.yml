@@ -49,5 +49,17 @@ jobs:
         git commit --allow-empty -m "${GITHUB_SHA}"
         git push https://Anuken:${{ secrets.API_TOKEN_GITHUB }}@github.com/Anuken/MindustryJitpack
         cd ../Mindustry
+    - name: build desktop jar
+      run: ./gradlew desktop:dist
+    - uses: actions/upload-artifact@v2
+      with:
+        name: upload desktop jar
+        path: desktop/build/libs/Mindustry.jar
+    - name: build android apk
+      run: ./gradlew android:assembleDebug
+    - uses: actions/upload-artifact@v2
+      with:
+        name: upload android jar
+        path: android/build/outputs/apk/debug/android-debug.apk
     - name: Run unit tests
       run: ./gradlew clean cleanTest test --stacktrace
