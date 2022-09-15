@@ -66,6 +66,7 @@ public class GridSettingsDialog extends BaseDialog{
         });
 
         buttons.button("@ok", () -> {
+            Grid.recalculateChunks();
             Grid.moveAllMarkedChunks(Vars.rules.xOffset - prevXOffset, Vars.rules.yOffset - prevYOffset);
             hide();
         });

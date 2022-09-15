@@ -599,6 +599,11 @@ public class MapEditorDialog extends Dialog implements Disposable{
 
                 tools.row();
 
+                addTool.get(EditorTool.chunkMarker);
+                addTool.get(EditorTool.chunkRemover);
+
+                tools.row();
+
                 tools.table(Tex.underline, t -> t.add("@editor.teams"))
                 .colspan(3).height(40).width(size * 3f + 3f).padBottom(3);
 

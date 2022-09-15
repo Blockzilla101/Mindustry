@@ -6,6 +6,9 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.bomberman.*;
+import mindustry.bomberman.Grid.*;
+import mindustry.bomberman.dialogs.MarkOptionsDialog.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.world.*;
@@ -232,6 +235,132 @@ public enum EditorTool{
                 editor.drawBlocks(x, y, tile -> Mathf.chance(chance) && tile.block() != Blocks.air);
             }else{
                 editor.drawBlocks(x, y, tile -> Mathf.chance(chance));
+            }
+        }
+    },
+    chunkMarker(KeyCode.m){
+        {
+            draggable = true;
+        }
+
+        @Override
+        public void touched(int x, int y){
+
+        }
+
+        @Override
+        public void touchedLine(int x1, int y1, int x2, int y2){
+            x1 = Grid.centerX(x1);
+            x2 = Grid.centerX(x2);
+            y1 = Grid.centerY(y1);
+            y2 = Grid.centerY(y2);
+
+            if (Vars.markOptions.getCurrentSelectedMarker() == null) {
+                updateMark(Grid.GPos.from(x2, y2));
+                return;
+            }
+
+            if (x1 != x2 && y1 != y2) {
+                if (Math.abs(x2 - x1) > Math.abs(y2 - y1)) {
+                    y2 = y1;
+                } else {
+                    x2 = x1;
+                }
+            }
+
+            int start = 0, end = 0;
+            if (x1 == x2) {
+                start = y1;
+                end = y2;
+            }
+
+            if (y1 == y2) {
+                start = x1;
+                end = x2;
+            }
+
+            if (start > end) {
+                var temp = end;
+                end = start;
+                start = temp;
+            }
+
+            for(var i = start; i <= end; i += Grid.size) {
+                var chunk = Grid.GPos.from(x1 == x2 ? x1 : i, y1 == y2 ? y1 : i);
+                updateMark(chunk);
+            }
+        }
+        void updateMark(GPos chunk) {
+            if (Vars.markOptions.getCurrentSelectedMarker() != null) {
+                Vars.markOptions.getCurrentSelectedMarker().addUnique(chunk.packed());
+            } else {
+                if (Vars.markOptions.type == ChunkMarkType.endRegionStarter) {
+                    Vars.rules.endGameRegion.clear();
+                    Grid.updateEndGameRegion(chunk);
+                }
+                if (Vars.markOptions.type == ChunkMarkType.playableRegionStarter) {
+                    Vars.rules.playableRegion.clear();
+                    Grid.updatePlayableRegions(chunk);
+                    Vars.rules.endGameRegion.each(c -> {
+                        if (!Vars.rules.playableRegion.contains(c)) Vars.rules.endGameRegion.removeValue(c);
+                    });
+                }
+            }
+        }
+    },
+
+    chunkRemover(KeyCode.m){
+        {
+            draggable = true;
+        }
+
+        @Override
+        public void touched(int x, int y){
+
+        }
+
+        @Override
+        public void touchedLine(int x1, int y1, int x2, int y2){
+            x1 = Grid.centerX(x1);
+            x2 = Grid.centerX(x2);
+            y1 = Grid.centerY(y1);
+            y2 = Grid.centerY(y2);
+
+            if (x1 != x2 && y1 != y2) {
+                if (Math.abs(x2 - x1) > Math.abs(y2 - y1)) {
+                    y2 = y1;
+                } else {
+                    x2 = x1;
+                }
+            }
+
+            int start = 0, end = 0;
+            if (x1 == x2) {
+                start = y1;
+                end = y2;
+            }
+
+            if (y1 == y2) {
+                start = x1;
+                end = x2;
+            }
+
+            if (start > end) {
+                var temp = end;
+                end = start;
+                start = temp;
+            }
+
+            for(var i = start; i < end; i += Grid.size) {
+                var chunk = Grid.GPos.from(x1 == x2 ? x1 : i, y1 == y2 ? y1 : i);
+                updateMark(chunk);
+            }
+        }
+        void updateMark(GPos chunk) {
+            if (Vars.markOptions.getCurrentSelectedMarker() != null) {
+                Vars.markOptions.getCurrentSelectedMarker().removeValue(chunk.packed());
+            } else {
+                ui.showInfoFade("You cannot remove end or playable regions.", 13f);
             }
         }
     };

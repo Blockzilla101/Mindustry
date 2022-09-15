@@ -75,7 +75,11 @@ public class MapView extends Element implements GestureListener{
                 
                 if(button == KeyCode.mouseRight){
                     lastTool = tool;
-                    tool = EditorTool.eraser;
+                    if (tool == EditorTool.chunkMarker) {
+                        tool = EditorTool.chunkRemover;
+                    } else {
+                        tool = EditorTool.eraser;
+                    }
                 }
 
                 if(button == KeyCode.mouseMiddle){
@@ -114,6 +118,10 @@ public class MapView extends Element implements GestureListener{
 
                 if(tool == EditorTool.line){
                     ui.editor.resetSaved();
+                    tool.touchedLine(startx, starty, p.x, p.y);
+                }
+
+                if(tool == EditorTool.chunkMarker || tool == EditorTool.chunkRemover){
                     tool.touchedLine(startx, starty, p.x, p.y);
                 }
 
@@ -331,6 +339,43 @@ public class MapView extends Element implements GestureListener{
                 v.x + scaling / 2f + offset,
                 v.y + scaling / 2f + offset,
                 scaling * editor.drawBlock.size / 2f);
+            }
+        }
+
+        if(tool == EditorTool.chunkMarker || tool == EditorTool.chunkRemover){
+            if(tool == EditorTool.chunkRemover) Draw.color(Pal.redderDust);
+
+            Point2 p = project(mousex, mousey);
+            Vec2 v = unproject(Grid.centerX(p.x), Grid.centerY(p.y)).add(x, y);
+
+            if(!drawing || Vars.markOptions.getCurrentSelectedMarker() == null){
+                Lines.square(v.x + scaling / 2f, v.y + scaling / 2f, scaling * 1.5f);
+            }else{
+                v = unproject(Grid.centerX(startx) - Grid.offset - 1, Grid.centerY(starty) - Grid.offset - 1).add(x, y);
+
+                var width = (Grid.centerX(p.x) - Grid.offset - 1) - (Grid.centerX(startx) - Grid.offset - 1);
+                var height = (Grid.centerY(p.y) - Grid.offset - 1) - (Grid.centerY(starty) - Grid.offset - 1);
+
+                if (Grid.centerX(p.x) == Grid.centerX(startx) && Grid.centerY(p.y) == Grid.centerY(starty)) {
+                    Lines.rect(v.x + scaling, v.y + scaling, Grid.size * scaling, Grid.size * scaling);
+                } else if (Math.abs(width) > Math.abs(height)) {
+                    if (width < 0) {
+                        v = unproject(Grid.centerX(startx) + Grid.offset, Grid.centerY(starty) - 1 - Grid.offset).add(x, y);
+                        width -= 3;
+                    } else {
+                        width += 3;
+                    }
+                    Lines.rect(v.x + scaling, v.y + scaling, width * scaling, Grid.size * scaling);
+                } else if (Math.abs(height) >= Math.abs(width)) {
+                    if (height < 0) {
+                        v = unproject(Grid.centerX(startx) - Grid.offset - 1, Grid.centerY(starty) + Grid.offset).add(x, y);
+                        height -= 3;
+                    } else {
+                        height += 3;
+                    }
+
+                    Lines.rect(v.x + scaling, v.y + scaling, Grid.size * scaling, height * scaling);
+                }
             }
         }
 

@@ -2,6 +2,9 @@ package mindustry.bomberman.dialogs;
 
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import arc.struct.*;
+import arc.util.*;
+import mindustry.bomberman.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
@@ -9,8 +12,6 @@ import mindustry.ui.dialogs.*;
 
 public class MarkOptionsDialog extends BaseDialog{
     public ChunkMarkType type = ChunkMarkType.unbreakable;
-    boolean clearMode = false;
-
     Table table = new Table();
 
     public MarkOptionsDialog(){
@@ -41,9 +42,6 @@ public class MarkOptionsDialog extends BaseDialog{
             }).fill(false).expand(false, false);
             table.row();
 
-            title("Other settings");
-            table.check("Clear mode", clearMode, b -> clearMode = b);
-
             cont.row();
             cont.add(table).center();
         });
@@ -58,6 +56,17 @@ public class MarkOptionsDialog extends BaseDialog{
         table.row();
         table.image().color(Pal.accent).height(3f).padRight(100f).padBottom(20);
         table.row();
+    }
+
+    @Nullable
+    public IntSeq getCurrentSelectedMarker() {
+        return switch(type) {
+            case unbreakable -> Vars.rules.unbreakable;
+            case midGameClear -> Vars.rules.midGameClearChunks;
+            case midGameBreakable -> Vars.rules.midGameBreakableChunks;
+            case endRegionWall -> Vars.rules.endGameRegionWalls;
+            default -> null;
+        };
     }
 
     public enum ChunkMarkType{
