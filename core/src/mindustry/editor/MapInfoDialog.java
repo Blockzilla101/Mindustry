@@ -103,7 +103,7 @@ public class MapInfoDialog extends BaseDialog{
                         hide();
                         return;
                     }
-                    mindustry.bomberman.Vars.gridSettingsDialog.show();
+                    mindustry.bomberman.Vars.bombermanSettingsDialog.show();
                     hide();
                 }).marginLeft(10f);
 

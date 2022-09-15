@@ -7,7 +7,7 @@ public class Vars{
     public static BombermanGridImage gridImage = new BombermanGridImage(0, 0);
     public static RegionGridImage regionImage = new RegionGridImage(0, 0);
 
-    public static GridSettingsDialog gridSettingsDialog = new GridSettingsDialog();
+    public static BombermanSettingsDialog bombermanSettingsDialog = new BombermanSettingsDialog();
     public static MapRulesDialog rulesDialog = new MapRulesDialog();
     public static MarkOptionsDialog markOptions = new MarkOptionsDialog();
 

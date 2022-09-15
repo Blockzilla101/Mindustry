@@ -1,5 +1,6 @@
 package mindustry.bomberman.dialogs;
 
+import arc.math.geom.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
@@ -9,6 +10,8 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
+
+import static mindustry.Vars.*;
 
 public class MarkOptionsDialog extends BaseDialog{
     public ChunkMarkType type = ChunkMarkType.unbreakable;
@@ -39,6 +42,9 @@ public class MarkOptionsDialog extends BaseDialog{
 
                 t.button("playable", style, () -> type = ChunkMarkType.playableRegionStarter).group(group).checked(b -> type == ChunkMarkType.playableRegionStarter).tooltip("recalculate playable region from chunk");
                 t.button("end region", style, () -> type = ChunkMarkType.endRegionStarter).group(group).checked(b -> type == ChunkMarkType.endRegionStarter).tooltip("recalculate end game region from chunk");
+                t.row();
+
+                t.button("safe chunk", style, () -> type = ChunkMarkType.safeChunk).group(group).checked(b -> type == ChunkMarkType.safeChunk).tooltip("chunks in which players are immune");
             }).fill(false).expand(false, false);
             table.row();
 
@@ -65,11 +71,77 @@ public class MarkOptionsDialog extends BaseDialog{
             case midGameClear -> Vars.rules.midGameClearChunks;
             case midGameBreakable -> Vars.rules.midGameBreakableChunks;
             case endRegionWall -> Vars.rules.endGameRegionWalls;
+            case safeChunk -> Vars.rules.safeChunks;
             default -> null;
         };
     }
 
+    public void updateLine(int x1, int x2, int y1, int y2, boolean removing) {
+        if (Vars.markOptions.getCurrentSelectedMarker() == null) {
+            if (removing) {
+                ui.showInfoFade("You cannot remove end region or playable region chunks", 10f);
+            } else {
+                updateMark(Point2.pack(x2, y2), false);
+            }
+            return;
+        }
+
+        if (x1 != x2 && y1 != y2) {
+            if (Math.abs(x2 - x1) > Math.abs(y2 - y1)) {
+                y2 = y1;
+            } else {
+                x2 = x1;
+            }
+        }
+
+        int start = 0, end = 0;
+        if (x1 == x2) {
+            start = y1;
+            end = y2;
+        }
+
+        if (y1 == y2) {
+            start = x1;
+            end = x2;
+        }
+
+        if (start > end) {
+            var temp = end;
+            end = start;
+            start = temp;
+        }
+
+        for(var i = start; i <= end; i += Grid.size) {
+            updateMark(Point2.pack(x1 == x2 ? x1 : i, y1 == y2 ? y1 : i), removing);
+        }
+    }
+
+    public void updateMark(int chunk, boolean removing) {
+        if (getCurrentSelectedMarker() != null) {
+            if (!removing) {
+                getCurrentSelectedMarker().addUnique(chunk);
+                if (type == ChunkMarkType.midGameBreakable){
+                    Vars.rules.unbreakable.addUnique(chunk);
+                }
+            } else {
+                getCurrentSelectedMarker().removeValue(chunk);
+            }
+        } else {
+            if (type == ChunkMarkType.endRegionStarter) {
+                Vars.rules.endGameRegion.clear();
+                Grid.updateEndGameRegion(Grid.GPos.from(chunk));
+            }
+            if (type == ChunkMarkType.playableRegionStarter) {
+                Vars.rules.playableRegion.clear();
+                Grid.updatePlayableRegions(Grid.GPos.from(chunk));
+                Vars.rules.endGameRegion.each(c -> {
+                    if (!Vars.rules.playableRegion.contains(c)) Vars.rules.endGameRegion.removeValue(c);
+                });
+            }
+        }
+    }
+
     public enum ChunkMarkType{
-        unbreakable, midGameClear, midGameBreakable, endRegionWall, playableRegionStarter, endRegionStarter
+        unbreakable, midGameClear, midGameBreakable, endRegionWall, playableRegionStarter, endRegionStarter, safeChunk
     }
 }

@@ -3,7 +3,6 @@ package mindustry.bomberman;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.scene.*;
-import mindustry.bomberman.*;
 
 import static mindustry.Vars.*;
 
@@ -31,8 +30,8 @@ public class BombermanGridImage extends Element{
 
         Draw.color(Color.black);
         Draw.alpha(0.3f);
-        for(int x = (Vars.gridSettingsDialog.invert ? Grid.size : 0) + Vars.rules.xOffset; x < imageWidth; x += Grid.size * 2){
-            for(int y = (Vars.gridSettingsDialog.invert ? Grid.size : 0) + Vars.rules.yOffset; y < imageHeight; y += Grid.size * 2){
+        for(int x = (Vars.bombermanSettingsDialog.invert ? Grid.size : 0) + Vars.rules.xOffset; x < imageWidth; x += Grid.size * 2){
+            for(int y = (Vars.bombermanSettingsDialog.invert ? Grid.size : 0) + Vars.rules.yOffset; y < imageHeight; y += Grid.size * 2){
                 var width = Grid.size * xspace - 2;
                 var height = Grid.size * yspace - 2;
                 // fixme: figure how to make the chunks not be drawn out of bounds

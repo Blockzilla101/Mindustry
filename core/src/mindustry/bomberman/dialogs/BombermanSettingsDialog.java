@@ -2,27 +2,29 @@ package mindustry.bomberman.dialogs;
 
 import arc.scene.ui.layout.*;
 import mindustry.bomberman.*;
-import mindustry.ui.*;
+import mindustry.graphics.*;
 import mindustry.ui.dialogs.*;
 
-public class GridSettingsDialog extends BaseDialog{
+public class BombermanSettingsDialog extends BaseDialog{
     public boolean invert = false;
     private boolean prevInvert;
     private int prevXOffset, prevYOffset;
 
-    public GridSettingsDialog(){
-        super("Grid Settings");
+    private Table table = new Table();
+
+    public BombermanSettingsDialog(){
+        super("Bomberman Settings");
 
         closeOnBack();
         shown(() -> {
             cont.clear();
+            table.clear();
 
             prevInvert = invert;
             prevXOffset = Vars.rules.xOffset;
             prevYOffset = Vars.rules.yOffset;
 
-            Table table = new Table();
-
+            title("Grid Settings");
             table.table(t -> {
                 t.label(() -> "X Offset");
                 t.slider(0, 3, 1, Vars.rules.xOffset, val -> Vars.rules.xOffset = (int)val);
@@ -70,5 +72,12 @@ public class GridSettingsDialog extends BaseDialog{
             Grid.moveAllMarkedChunks(Vars.rules.xOffset - prevXOffset, Vars.rules.yOffset - prevYOffset);
             hide();
         });
+    }
+
+    void title(String text){
+        table.add(text).color(Pal.accent).padTop(20).padRight(100f).padBottom(-3);
+        table.row();
+        table.image().color(Pal.accent).height(3f).padRight(100f).padBottom(20);
+        table.row();
     }
 }

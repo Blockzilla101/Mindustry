@@ -75,7 +75,7 @@ public class MapView extends Element implements GestureListener{
                 
                 if(button == KeyCode.mouseRight){
                     lastTool = tool;
-                    if (tool == EditorTool.chunkMarker) {
+                    if (tool == EditorTool.chunkMarker || tool == EditorTool.chunkRemover) {
                         tool = EditorTool.chunkRemover;
                     } else {
                         tool = EditorTool.eraser;
@@ -167,6 +167,11 @@ public class MapView extends Element implements GestureListener{
     }
 
     public void setTool(EditorTool tool){
+        if (tool == EditorTool.chunkMarker || tool == EditorTool.chunkRemover) {
+            EditorState.toolRenderRegions = true;
+        } else {
+            EditorState.toolRenderRegions = false;
+        }
         this.tool = tool;
     }
 
@@ -289,7 +294,7 @@ public class MapView extends Element implements GestureListener{
             Draw.reset();
         }
 
-        if(EditorState.renderRegions && editor.isBomberman){
+        if((EditorState.renderRegions || EditorState.toolRenderRegions) && editor.isBomberman){
             Draw.color(Color.gray);
             Vars.regionImage.setBounds(centerx - sclwidth / 2, centery - sclheight / 2, sclwidth, sclheight);
             Vars.regionImage.draw();
