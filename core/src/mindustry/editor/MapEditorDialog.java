@@ -601,6 +601,7 @@ public class MapEditorDialog extends Dialog implements Disposable{
 
                 addTool.get(EditorTool.chunkMarker);
                 addTool.get(EditorTool.chunkRemover);
+                addTool.get(EditorTool.teamSelector);
 
                 tools.row();
 

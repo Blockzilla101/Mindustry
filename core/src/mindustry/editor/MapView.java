@@ -172,6 +172,7 @@ public class MapView extends Element implements GestureListener{
         } else {
             EditorState.toolRenderRegions = false;
         }
+        tool.selected();
         this.tool = tool;
     }
 

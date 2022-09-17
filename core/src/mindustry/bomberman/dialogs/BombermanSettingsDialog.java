@@ -27,13 +27,13 @@ public class BombermanSettingsDialog extends BaseDialog{
             title("Grid Settings");
             table.table(t -> {
                 t.label(() -> "X Offset");
-                t.slider(0, 3, 1, Vars.rules.xOffset, val -> Vars.rules.xOffset = (int)val);
+                t.slider(0, 2, 1, Vars.rules.xOffset, val -> Vars.rules.xOffset = (int)val);
             });
             table.row();
 
             table.table(t -> {
                 t.label(() -> "Y Offset");
-                t.slider(0, 3, 1, Vars.rules.yOffset, val -> Vars.rules.yOffset = (int)val);
+                t.slider(0, 2, 1, Vars.rules.yOffset, val -> Vars.rules.yOffset = (int)val);
             });
             table.row();
 

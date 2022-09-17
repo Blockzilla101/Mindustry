@@ -10,6 +10,7 @@ public class Vars{
     public static BombermanSettingsDialog bombermanSettingsDialog = new BombermanSettingsDialog();
     public static MapRulesDialog rulesDialog = new MapRulesDialog();
     public static MarkOptionsDialog markOptions = new MarkOptionsDialog();
+    public static TeamSelectorDialog teamSelector = new TeamSelectorDialog();
 
     public static void reset() {
         rules = new MapRules();

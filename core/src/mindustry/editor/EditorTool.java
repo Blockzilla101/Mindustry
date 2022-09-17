@@ -239,10 +239,6 @@ public enum EditorTool{
         }
     },
     chunkMarker(KeyCode.m){
-        {
-            draggable = true;
-        }
-
         @Override
         public void touchedLine(int x1, int y1, int x2, int y2){
             Vars.markOptions.updateLine(Grid.centerX(x1), Grid.centerX(x2), Grid.centerY(y1), Grid.centerY(y2), false);
@@ -250,13 +246,16 @@ public enum EditorTool{
     },
 
     chunkRemover(KeyCode.m){
-        {
-            draggable = true;
-        }
-
         @Override
         public void touchedLine(int x1, int y1, int x2, int y2){
             Vars.markOptions.updateLine(Grid.centerX(x1), Grid.centerX(x2), Grid.centerY(y1), Grid.centerY(y2), true);
+        }
+    },
+
+    teamSelector(KeyCode.n){
+        @Override
+        public void selected(){
+            Vars.teamSelector.show();
         }
     };
 
@@ -294,4 +293,6 @@ public enum EditorTool{
     public void touched(int x, int y){}
 
     public void touchedLine(int x1, int y1, int x2, int y2){}
+
+    public void selected(){};
 }
