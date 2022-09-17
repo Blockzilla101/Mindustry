@@ -27,13 +27,14 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
       - name: build
-        run: |
-          - ./gradlew pack desktop:dist android:assembleDebug
-      - uses: actions/upload-artifact@v2
+        run: ./gradlew pack desktop:dist android:assembleDebug
+      - name: upload desktop jar
+        uses: actions/upload-artifact@v2
         with:
           name: Mindustry.jar
           path: desktop/build/libs/Mindustry.jar
-      - uses: actions/upload-artifact@v2
+      - name: upload android apk
+        uses: actions/upload-artifact@v2
         with:
           name: Mindustry.apk
           path: android/build/outputs/apk/debug/android-debug.apk
