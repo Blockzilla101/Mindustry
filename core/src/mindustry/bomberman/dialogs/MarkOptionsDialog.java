@@ -1,11 +1,13 @@
 package mindustry.bomberman.dialogs;
 
+import arc.graphics.*;
 import arc.math.geom.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.bomberman.*;
+import mindustry.editor.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
@@ -45,6 +47,7 @@ public class MarkOptionsDialog extends BaseDialog{
                 t.row();
 
                 t.button("safe chunk", style, () -> type = ChunkMarkType.safeChunk).group(group).checked(b -> type == ChunkMarkType.safeChunk).tooltip("chunks in which players are immune");
+                t.button("spawn", style, () -> type = ChunkMarkType.spawn).group(group).checked(b -> type == ChunkMarkType.spawn).tooltip("remove spawns");
             }).fill(false).expand(false, false);
             table.row();
 
@@ -77,6 +80,16 @@ public class MarkOptionsDialog extends BaseDialog{
     }
 
     public void updateLine(int x1, int x2, int y1, int y2, boolean removing) {
+        if (!removing && type == ChunkMarkType.spawn){
+            ui.showInfoFade("You cannot add spawns using the chunk marker", 10f);
+            return;
+        }
+
+        if ((type == ChunkMarkType.spawn || ui.editor.view.lastTool == EditorTool.teamMarker) && removing){
+            Vars.rules.spawns.remove(Point2.pack(x2, y2));
+            return;
+        }
+
         if (Vars.markOptions.getCurrentSelectedMarker() == null) {
             if (removing) {
                 ui.showInfoFade("You cannot remove end region or playable region chunks", 10f);
@@ -141,7 +154,24 @@ public class MarkOptionsDialog extends BaseDialog{
         }
     }
 
+    public Color getTypeColor() {
+        return getTypeColor(type);
+    }
+
+    public Color getTypeColor(ChunkMarkType type) {
+        return switch(type){
+            case unbreakable -> Color.cyan;
+            case midGameBreakable -> Color.teal;
+            case midGameClear -> Color.navy;
+            case safeChunk -> Color.green;
+            case endRegionStarter -> Color.red;
+            case playableRegionStarter -> Color.magenta;
+            case endRegionWall -> Color.yellow;
+            default -> Color.gray;
+        };
+    }
+
     public enum ChunkMarkType{
-        unbreakable, midGameClear, midGameBreakable, endRegionWall, playableRegionStarter, endRegionStarter, safeChunk
+        unbreakable, midGameClear, midGameBreakable, endRegionWall, playableRegionStarter, endRegionStarter, safeChunk, spawn
     }
 }

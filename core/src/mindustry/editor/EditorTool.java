@@ -7,8 +7,6 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.bomberman.*;
-import mindustry.bomberman.Grid.*;
-import mindustry.bomberman.dialogs.MarkOptionsDialog.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.world.*;
@@ -240,6 +238,11 @@ public enum EditorTool{
     },
     chunkMarker(KeyCode.m){
         @Override
+        public void selected(){
+            Vars.markOptions.show();
+        }
+
+        @Override
         public void touchedLine(int x1, int y1, int x2, int y2){
             Vars.markOptions.updateLine(Grid.centerX(x1), Grid.centerX(x2), Grid.centerY(y1), Grid.centerY(y2), false);
         }
@@ -252,10 +255,15 @@ public enum EditorTool{
         }
     },
 
-    teamSelector(KeyCode.n){
+    teamMarker(KeyCode.n){
         @Override
         public void selected(){
             Vars.teamSelector.show();
+        }
+
+        @Override
+        public void touched(int x, int y){
+            Vars.rules.spawns.put(Point2.pack(Grid.centerX(x), Grid.centerY(y)), Vars.teamSelector.currentTeam);
         }
     };
 

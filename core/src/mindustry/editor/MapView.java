@@ -12,6 +12,7 @@ import arc.scene.event.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.bomberman.*;
+import mindustry.content.*;
 import mindustry.graphics.*;
 import mindustry.input.*;
 import mindustry.ui.*;
@@ -32,7 +33,7 @@ public class MapView extends Element implements GestureListener{
     int lastx, lasty;
     int startx, starty;
     float mousex, mousey;
-    EditorTool lastTool;
+    public EditorTool lastTool;
 
     public MapView(){
 
@@ -75,9 +76,9 @@ public class MapView extends Element implements GestureListener{
                 
                 if(button == KeyCode.mouseRight){
                     lastTool = tool;
-                    if (tool == EditorTool.chunkMarker || tool == EditorTool.chunkRemover) {
+                    if(tool == EditorTool.chunkMarker || tool == EditorTool.chunkRemover || tool == EditorTool.teamMarker){
                         tool = EditorTool.chunkRemover;
-                    } else {
+                    }else{
                         tool = EditorTool.eraser;
                     }
                 }
@@ -167,9 +168,9 @@ public class MapView extends Element implements GestureListener{
     }
 
     public void setTool(EditorTool tool){
-        if (tool == EditorTool.chunkMarker || tool == EditorTool.chunkRemover) {
+        if(tool == EditorTool.chunkMarker || tool == EditorTool.chunkRemover || tool == EditorTool.teamMarker){
             EditorState.toolRenderRegions = true;
-        } else {
+        }else{
             EditorState.toolRenderRegions = false;
         }
         tool.selected();
@@ -348,39 +349,62 @@ public class MapView extends Element implements GestureListener{
             }
         }
 
-        if(tool == EditorTool.chunkMarker || tool == EditorTool.chunkRemover){
+        if(tool == EditorTool.chunkMarker || tool == EditorTool.chunkRemover || tool == EditorTool.teamMarker){
             if(tool == EditorTool.chunkRemover) Draw.color(Pal.redderDust);
 
             Point2 p = project(mousex, mousey);
             Vec2 v = unproject(Grid.centerX(p.x), Grid.centerY(p.y)).add(x, y);
 
-            if(!drawing || Vars.markOptions.getCurrentSelectedMarker() == null){
+            if(!drawing || Vars.markOptions.getCurrentSelectedMarker() == null || tool == EditorTool.teamMarker || lastTool == EditorTool.teamMarker){
                 Lines.square(v.x + scaling / 2f, v.y + scaling / 2f, scaling * 1.5f);
+                if(tool == EditorTool.teamMarker || lastTool == EditorTool.teamMarker){
+                    Draw.color(Vars.teamSelector.currentTeam.color);
+                    Draw.alpha(0.2f);
+                    Fill.crect(v.x - (Grid.offset * scaling), v.y - (Grid.offset * scaling), Grid.size * scaling, Grid.size * scaling);
+                    Draw.alpha(1f);
+                    Fill.crect(v.x, v.y, scaling, scaling);
+                } else {
+                    Draw.color(Vars.markOptions.getTypeColor());
+                    Draw.alpha(0.2f);
+                    Fill.crect(v.x - Grid.offset * scaling, v.y - Grid.offset * scaling, Grid.size * scaling, Grid.size * scaling);
+                }
             }else{
-                v = unproject(Grid.centerX(startx) - Grid.offset - 1, Grid.centerY(starty) - Grid.offset - 1).add(x, y);
+                v = unproject(Grid.centerX(startx) - Grid.offset, Grid.centerY(starty) - Grid.offset).add(x, y);
 
-                var width = (Grid.centerX(p.x) - Grid.offset - 1) - (Grid.centerX(startx) - Grid.offset - 1);
-                var height = (Grid.centerY(p.y) - Grid.offset - 1) - (Grid.centerY(starty) - Grid.offset - 1);
+                var width = (Grid.centerX(p.x) - Grid.offset) - (Grid.centerX(startx) - Grid.offset);
+                var height = (Grid.centerY(p.y) - Grid.offset) - (Grid.centerY(starty) - Grid.offset);
 
-                if (Grid.centerX(p.x) == Grid.centerX(startx) && Grid.centerY(p.y) == Grid.centerY(starty)) {
-                    Lines.rect(v.x + scaling, v.y + scaling, Grid.size * scaling, Grid.size * scaling);
-                } else if (Math.abs(width) > Math.abs(height)) {
-                    if (width < 0) {
-                        v = unproject(Grid.centerX(startx) + Grid.offset, Grid.centerY(starty) - 1 - Grid.offset).add(x, y);
+                if(Grid.centerX(p.x) == Grid.centerX(startx) && Grid.centerY(p.y) == Grid.centerY(starty)){
+                    Lines.rect(v.x, v.y, Grid.size * scaling, Grid.size * scaling);
+                    Draw.color(Vars.markOptions.getTypeColor());
+                    Draw.alpha(0.2f);
+                    Fill.crect(v.x, v.y, Grid.size * scaling, Grid.size * scaling);
+
+                }else if(Math.abs(width) > Math.abs(height)){
+                    if(width < 0){
+                        v = unproject(Grid.centerX(startx) + Grid.offset + 1, Grid.centerY(starty) - Grid.offset).add(x, y);
                         width -= 3;
-                    } else {
+                    }else{
                         width += 3;
                     }
-                    Lines.rect(v.x + scaling, v.y + scaling, width * scaling, Grid.size * scaling);
-                } else if (Math.abs(height) >= Math.abs(width)) {
-                    if (height < 0) {
-                        v = unproject(Grid.centerX(startx) - Grid.offset - 1, Grid.centerY(starty) + Grid.offset).add(x, y);
+
+                    Lines.rect(v.x, v.y, width * scaling, Grid.size * scaling);
+                    Draw.color(Vars.markOptions.getTypeColor());
+                    Draw.alpha(0.2f);
+                    Fill.crect(v.x, v.y, width * scaling, Grid.size * scaling);
+
+                } else if (Math.abs(height) >= Math.abs(width)){
+                    if(height < 0){
+                        v = unproject(Grid.centerX(startx) - Grid.offset, Grid.centerY(starty) + Grid.offset + 1).add(x, y);
                         height -= 3;
-                    } else {
+                    }else{
                         height += 3;
                     }
 
-                    Lines.rect(v.x + scaling, v.y + scaling, Grid.size * scaling, height * scaling);
+                    Lines.rect(v.x, v.y, Grid.size * scaling, height * scaling);
+                    Draw.color(Vars.markOptions.getTypeColor());
+                    Draw.alpha(0.2f);
+                    Fill.crect(v.x, v.y, Grid.size * scaling, height * scaling);
                 }
             }
         }

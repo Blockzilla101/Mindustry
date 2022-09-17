@@ -91,6 +91,14 @@ public class Grid{
         moveMarkedChunks(deltaX, deltaY, rules.midGameClearChunks);
         moveMarkedChunks(deltaX, deltaY, rules.midGameBreakableChunks);
         moveMarkedChunks(deltaX, deltaY, rules.safeChunks);
+
+        var spawns = new IntMap<Team>();
+        rules.spawns.forEach(item -> {
+            var x = Grid.unpackX(item.key) + deltaX;
+            var y = Grid.unpackY(item.key) + deltaY;
+            spawns.put(Point2.pack(x, y), item.value);
+        });
+        rules.spawns = spawns;
     }
 
     /**

@@ -4,6 +4,8 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.scene.*;
 import arc.struct.*;
+import mindustry.bomberman.dialogs.MarkOptionsDialog.*;
+import mindustry.content.*;
 
 import static mindustry.Vars.*;
 
@@ -17,13 +19,28 @@ public class RegionGridImage extends Element{
 
     @Override
     public void draw(){
-        renderMarkedChunks(Vars.rules.midGameBreakableChunks, Color.teal);
-        renderMarkedChunks(Vars.rules.midGameClearChunks, Color.navy);
-        renderMarkedChunks(Vars.rules.endGameRegionWalls, Color.yellow);
-        renderMarkedChunks(Vars.rules.safeChunks, Color.green);
-        renderMarkedChunks(Vars.rules.endGameRegion, Color.red);
-        renderMarkedChunks(Vars.rules.unbreakable, Color.cyan);
-        renderMarkedChunks(Vars.rules.playableRegion, Color.magenta);
+        renderMarkedChunks(Vars.rules.midGameBreakableChunks, Vars.markOptions.getTypeColor(ChunkMarkType.midGameBreakable));
+        renderMarkedChunks(Vars.rules.midGameClearChunks, Vars.markOptions.getTypeColor(ChunkMarkType.midGameClear));
+        renderMarkedChunks(Vars.rules.endGameRegionWalls, Vars.markOptions.getTypeColor(ChunkMarkType.endRegionWall));
+        renderMarkedChunks(Vars.rules.safeChunks, Vars.markOptions.getTypeColor(ChunkMarkType.safeChunk));
+        renderMarkedChunks(Vars.rules.endGameRegion, Vars.markOptions.getTypeColor(ChunkMarkType.endRegionStarter));
+        renderMarkedChunks(Vars.rules.unbreakable, Vars.markOptions.getTypeColor(ChunkMarkType.unbreakable));
+        renderMarkedChunks(Vars.rules.playableRegion, Vars.markOptions.getTypeColor(ChunkMarkType.playableRegionStarter));
+
+        float xspace = (getWidth() / imageWidth);
+        float yspace = (getHeight() / imageHeight);
+        float s = 1f;
+
+        Vars.rules.spawns.forEach((item) -> {
+            Draw.color(item.value.color);
+            Draw.alpha(0.3f);
+            var x = Grid.unpackX(item.key) - Grid.offset;
+            var y = Grid.unpackY(item.key) - Grid.offset;
+            var offset = EditorState.gridEnabled ? 2 : 0;
+            Fill.crect((int)(this.x + xspace * x - s + offset), (int)(this.y + y * yspace - s + offset), Grid.size * xspace - offset, Grid.size * yspace - offset);
+            Draw.alpha(1f);
+            Fill.crect(this.x + xspace * (x + Grid.offset) - s, this.y + (y + Grid.offset) * yspace - s, xspace, yspace);
+        });
     }
 
     void renderMarkedChunks(IntSeq chunks, Color color){

@@ -35,7 +35,7 @@ import mindustry.world.meta.*;
 import static mindustry.Vars.*;
 
 public class MapEditorDialog extends Dialog implements Disposable{
-    private MapView view;
+    public MapView view;
     private MapInfoDialog infoDialog;
     private MapLoadDialog loadDialog;
     private MapResizeDialog resizeDialog;
@@ -601,7 +601,7 @@ public class MapEditorDialog extends Dialog implements Disposable{
 
                 addTool.get(EditorTool.chunkMarker);
                 addTool.get(EditorTool.chunkRemover);
-                addTool.get(EditorTool.teamSelector);
+                addTool.get(EditorTool.teamMarker);
 
                 tools.row();
 
