@@ -34,30 +34,50 @@ public class MarkOptionsDialog extends BaseDialog{
                 var style = Styles.flatTogglet;
 
                 t.defaults().size(140f, 50f);
-                t.button("unbreakable", style, () -> type = ChunkMarkType.unbreakable).group(group).checked(b -> type == ChunkMarkType.unbreakable).tooltip("chunks that cannot be broken");
-                t.button("end region border", style, () -> type = ChunkMarkType.endRegionWall).group(group).checked(b -> type == ChunkMarkType.endRegionWall).tooltip("border Chunks for ending area");
+                t.button("unbreakable", style, () -> {
+                    type = ChunkMarkType.unbreakable;
+                    hide();
+                }).group(group).checked(b -> type == ChunkMarkType.unbreakable).tooltip("chunks that cannot be broken");
+                t.button("end region border", style, () -> {
+                    type = ChunkMarkType.endRegionWall;
+                    hide();
+                }).group(group).checked(b -> type == ChunkMarkType.endRegionWall).tooltip("border Chunks for ending area");
                 t.row();
 
-                t.button("midgame clear", style, () -> type = ChunkMarkType.midGameClear).group(group).checked(b -> type == ChunkMarkType.midGameClear).tooltip("chunks that are cleared when mid game is reached");
-                t.button("midgame breakable", style, () -> type = ChunkMarkType.midGameBreakable).group(group).checked(b -> type == ChunkMarkType.midGameBreakable).tooltip("chunks that are converted to breakable when mid game is reached");
+                t.button("midgame clear", style, () -> {
+                    type = ChunkMarkType.midGameClear;
+                    hide();
+                }).group(group).checked(b -> type == ChunkMarkType.midGameClear).tooltip("chunks that are cleared when mid game is reached");
+                t.button("midgame breakable", style, () -> {
+                    type = ChunkMarkType.midGameBreakable;
+                    hide();
+                }).group(group).checked(b -> type == ChunkMarkType.midGameBreakable).tooltip("chunks that are converted to breakable when mid game is reached");
                 t.row();
 
-                t.button("playable", style, () -> type = ChunkMarkType.playableRegionStarter).group(group).checked(b -> type == ChunkMarkType.playableRegionStarter).tooltip("recalculate playable region from chunk");
-                t.button("end region", style, () -> type = ChunkMarkType.endRegionStarter).group(group).checked(b -> type == ChunkMarkType.endRegionStarter).tooltip("recalculate end game region from chunk");
+                t.button("playable", style, () -> {
+                    type = ChunkMarkType.playableRegionStarter;
+                    hide();
+                }).group(group).checked(b -> type == ChunkMarkType.playableRegionStarter).tooltip("recalculate playable region from chunk");
+                t.button("end region", style, () -> {
+                    type = ChunkMarkType.endRegionStarter;
+                    hide();
+                }).group(group).checked(b -> type == ChunkMarkType.endRegionStarter).tooltip("recalculate end game region from chunk");
                 t.row();
 
-                t.button("safe chunk", style, () -> type = ChunkMarkType.safeChunk).group(group).checked(b -> type == ChunkMarkType.safeChunk).tooltip("chunks in which players are immune");
-                t.button("spawn", style, () -> type = ChunkMarkType.spawn).group(group).checked(b -> type == ChunkMarkType.spawn).tooltip("remove spawns");
+                t.button("safe chunk", style, () -> {
+                    type = ChunkMarkType.safeChunk;
+                    hide();
+                }).group(group).checked(b -> type == ChunkMarkType.safeChunk).tooltip("chunks in which players are immune");
+                t.button("spawn", style, () -> {
+                    type = ChunkMarkType.spawn;
+                    hide();
+                }).group(group).checked(b -> type == ChunkMarkType.spawn).tooltip("remove spawns");
             }).fill(false).expand(false, false);
             table.row();
 
             cont.row();
             cont.add(table).center();
         });
-
-        buttons.defaults().size(200f, 50f);
-        buttons.button("@cancel", this::hide);
-        buttons.button("@ok", this::hide);
     }
 
     void title(String text){

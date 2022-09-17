@@ -353,7 +353,10 @@ public class MapEditor{
         }
 
         renderer.resize(width, height);
-        if (isBomberman) Grid.recalculateChunks();
+        if (isBomberman) {
+            Grid.recalculateChunks();
+            Vars.sanitizeRules();
+        }
         loading = false;
     }
 

@@ -92,7 +92,7 @@ public class Grid{
         moveMarkedChunks(deltaX, deltaY, rules.midGameBreakableChunks);
         moveMarkedChunks(deltaX, deltaY, rules.safeChunks);
 
-        var spawns = new IntMap<Team>();
+        var spawns = new ObjectMap<Integer, Team>();
         rules.spawns.forEach(item -> {
             var x = Grid.unpackX(item.key) + deltaX;
             var y = Grid.unpackY(item.key) + deltaY;

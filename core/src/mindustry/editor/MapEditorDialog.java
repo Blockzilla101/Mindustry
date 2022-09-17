@@ -332,6 +332,7 @@ public class MapEditorDialog extends Dialog implements Disposable{
         String name = editor.tags.get("name", "").trim();
         editor.tags.put("rules", JsonIO.write(state.rules));
         if(editor.isBomberman) {
+            mindustry.bomberman.Vars.sanitizeRules();
             editor.tags.put("bomberman-rules", JsonIO.write(mindustry.bomberman.Vars.rules));
         }
         editor.tags.remove("width");
