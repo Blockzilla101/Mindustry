@@ -15,6 +15,7 @@ public class BombermanGridImage extends Element{
 
     @Override
     public void draw(){
+        if (!editor.isBomberman) return;
         float xspace = (getWidth() / imageWidth);
         float yspace = (getHeight() / imageHeight);
         float s = 1f;

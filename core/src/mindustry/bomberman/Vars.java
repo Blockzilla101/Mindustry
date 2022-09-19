@@ -1,6 +1,7 @@
 package mindustry.bomberman;
 
 import arc.struct.*;
+import mindustry.bomberman.MapRules.*;
 import mindustry.bomberman.dialogs.*;
 import mindustry.game.*;
 
@@ -26,26 +27,32 @@ public class Vars{
         EditorState.gridEnabled = false;
     }
 
-    public static void sanitizeRules() {
+    public static void cleanupRules() {
         var spawns = new ObjectMap<Integer, Team>();
+        rules.spawnsByTeam.clear();
         rules.spawns.forEach(item -> {
             var x = Grid.unpackX(item.key);
             var y = Grid.unpackY(item.key);
             if (x > editor.width() || x < 0) return;
             if (y > editor.height() || y < 0) return;
             spawns.put(item.key, item.value);
+
+            if (!rules.spawnsByTeam.containsKey(item.value)) rules.spawnsByTeam.put(item.value, new Seq<>());
+            rules.spawnsByTeam.get(item.value).add(item.key);
         });
         rules.spawns = spawns;
-        rules.unbreakable = sanitizeMarks(rules.unbreakable);
-        rules.playableRegion = sanitizeMarks(rules.playableRegion);
-        rules.endGameRegion = sanitizeMarks(rules.endGameRegion);
-        rules.endGameRegionWalls = sanitizeMarks(rules.endGameRegionWalls);
-        rules.midGameClearChunks = sanitizeMarks(rules.midGameClearChunks);
-        rules.midGameBreakableChunks = sanitizeMarks(rules.midGameBreakableChunks);
-        rules.safeChunks = sanitizeMarks(rules.safeChunks);
+        rules.unbreakable = cleanupMarkedChunks(rules.unbreakable);
+        rules.playableRegion = cleanupMarkedChunks(rules.playableRegion);
+        rules.endGameRegion = cleanupMarkedChunks(rules.endGameRegion);
+        rules.endGameRegionWalls = cleanupMarkedChunks(rules.endGameRegionWalls);
+        rules.midGameClearChunks = cleanupMarkedChunks(rules.midGameClearChunks);
+        rules.midGameBreakableChunks = cleanupMarkedChunks(rules.midGameBreakableChunks);
+        rules.safeChunks = cleanupMarkedChunks(rules.safeChunks);
+        if (rules.startingStage == PlayingStage.mid || rules.startingStage == PlayingStage.end) rules.startStageLength = 0;
+        if (rules.startingStage == PlayingStage.end) rules.midStageLength = 0;
     }
 
-    private static IntSeq sanitizeMarks(IntSeq map){
+    private static IntSeq cleanupMarkedChunks(IntSeq map){
         var temp = new IntSeq();
         map.each(chunk -> {
             var x = Grid.unpackX(chunk);

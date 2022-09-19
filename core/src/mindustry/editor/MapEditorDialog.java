@@ -332,7 +332,7 @@ public class MapEditorDialog extends Dialog implements Disposable{
         String name = editor.tags.get("name", "").trim();
         editor.tags.put("rules", JsonIO.write(state.rules));
         if(editor.isBomberman) {
-            mindustry.bomberman.Vars.sanitizeRules();
+            mindustry.bomberman.Vars.cleanupRules();
             editor.tags.put("bomberman-rules", JsonIO.write(mindustry.bomberman.Vars.rules));
         }
         editor.tags.remove("width");
@@ -486,6 +486,7 @@ public class MapEditorDialog extends Dialog implements Disposable{
                 Cons<EditorTool> addTool = tool -> {
 
                     ImageButton button = new ImageButton(ui.getIcon(tool.name()), Styles.squareTogglei);
+                    if (tool == EditorTool.chunkMarker || tool == EditorTool.chunkRemover || tool == EditorTool.teamMarker) button.setDisabled(() -> editor.isBomberman);
                     button.clicked(() -> {
                         view.setTool(tool);
                         if(lastTable[0] != null){
@@ -665,19 +666,19 @@ public class MapEditorDialog extends Dialog implements Disposable{
 
                 mid.row();
                 mid.table(t -> {
-                    t.check("Toggle Grid", (checked) -> EditorState.gridEnabled = checked).visible(() -> editor.isBomberman).growX().margin(9f);
+                    t.check("Toggle Grid", (checked) -> EditorState.gridEnabled = checked).visible(() -> editor.isBomberman).growX().margin(9f).left();
                 }).growX().top();
 
                 mid.row();
                 mid.table(t -> {
-                    t.check("Toggle Regions", (checked) -> EditorState.renderRegions = checked).visible(() -> editor.isBomberman).growX().margin(9f);
+                    t.check("Toggle Regions", (checked) -> EditorState.renderRegions = checked).visible(() -> editor.isBomberman).growX().margin(9f).left();
                 }).growX().top();
 
                 mid.row();
                 mid.table(t -> {
                     t.button("mark options", () -> {
                         mindustry.bomberman.Vars.markOptions.show();
-                    });
+                    }).growX().visible(() -> editor.isBomberman).margin(9f).left();
                 }).growX().top();
 
             }).margin(0).left().growY();

@@ -98,24 +98,15 @@ public class MapInfoDialog extends BaseDialog{
                 r.row();
 
                 r.button("Grid Settings", Icon.grid, style, () -> {
-                    if (!editor.isBomberman) {
-                        Menus.infoMessage("Not available outside of bomberman maps.");
-                        hide();
-                        return;
-                    }
                     mindustry.bomberman.Vars.bombermanSettingsDialog.show();
                     hide();
-                }).marginLeft(10f);
+                }).marginLeft(10f).get().setDisabled(() -> editor.isBomberman);
 
                 r.button("Bomberman Rules", Icon.list, style, () -> {
-                    if (!editor.isBomberman) {
-                        Menus.infoMessage("Not available outside of bomberman maps.");
-                        hide();
-                        return;
-                    }
                     mindustry.bomberman.Vars.rulesDialog.show();
                     hide();
-                }).marginLeft(10f);
+                }).marginLeft(10f).get().setDisabled(() -> editor.isBomberman);
+
             }).colspan(2).center();
 
             name.change();

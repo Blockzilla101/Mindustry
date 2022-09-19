@@ -19,6 +19,7 @@ public class RegionGridImage extends Element{
 
     @Override
     public void draw(){
+        if (!editor.isBomberman) return;
         renderMarkedChunks(Vars.rules.midGameBreakableChunks, Vars.markOptions.getTypeColor(ChunkMarkType.midGameBreakable));
         renderMarkedChunks(Vars.rules.midGameClearChunks, Vars.markOptions.getTypeColor(ChunkMarkType.midGameClear));
         renderMarkedChunks(Vars.rules.endGameRegionWalls, Vars.markOptions.getTypeColor(ChunkMarkType.endRegionWall));

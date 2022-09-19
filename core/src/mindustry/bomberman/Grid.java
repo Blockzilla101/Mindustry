@@ -1,16 +1,10 @@
 package mindustry.bomberman;
 
-import arc.*;
-import arc.func.*;
 import arc.math.geom.*;
 import arc.struct.*;
 
-import arc.util.*;
-import mindustry.content.*;
 import mindustry.game.*;
-import mindustry.gen.*;
 import mindustry.world.*;
-import mindustry.world.blocks.power.*;
 
 import java.util.*;
 
@@ -101,52 +95,6 @@ public class Grid{
         rules.spawns = spawns;
     }
 
-    /**
-     * @param chunk The chunk to start walking from
-     * @param range Maximum number of chunks to walk in each direction
-     * @param postCheck Whether to the do the endOn check after or before adding the chunk
-     * @param endOn Chunk on which stop walking at
-     * @return The walked chunks
-     */
-    public static Seq<GPos> getNeighbouring(GPos chunk, int range, boolean postCheck, Boolf<GPos> endOn){
-        var chunks = new Seq<GPos>();
-        var iRange = 0;
-        // figure out a better of doing this:
-        // walk up
-        iRange = range;
-        for(int i = chunk.y + size; i < world.height() && iRange > 0; i += size){
-            if(postCheck) chunks.add(GPos.from(chunk.x, i));
-            if(endOn.get(GPos.from(chunk.x, i))) break;
-            if(!postCheck) chunks.add(GPos.from(chunk.x, i));
-            iRange--;
-        }
-        // walk down
-        iRange = range;
-        for(int i = chunk.y - size; i > 0 && iRange > 0; i -= size){
-            if(postCheck) chunks.add(GPos.from(chunk.x, i));
-            if(endOn.get(GPos.from(chunk.x, i))) break;
-            if(!postCheck) chunks.add(GPos.from(chunk.x, i));
-            iRange--;
-        }
-        // walk right
-        iRange = range;
-        for(int i = chunk.x + size; i < world.width() && iRange > 0; i += size){
-            if(postCheck) chunks.add(GPos.from(i, chunk.y));
-            if(endOn.get(GPos.from(i, chunk.y))) break;
-            if(!postCheck) chunks.add(GPos.from(i, chunk.y));
-            iRange--;
-        }
-        // walk left
-        iRange = range;
-        for(int i = chunk.x - size; i > 0 && iRange > 0; i -= size){
-            if(postCheck) chunks.add(GPos.from(i, chunk.y));
-            if(endOn.get(GPos.from(i, chunk.y))) break;
-            if(!postCheck) chunks.add(GPos.from(i, chunk.y));
-            iRange--;
-        }
-        return chunks;
-    }
-
     public static void updatePlayableRegions(GPos starter){
         rules.playableRegion.add(starter.packed());
         var neighbours = starter.neighbourChunks(true);
@@ -197,14 +145,6 @@ public class Grid{
             this(x, y, true);
         }
 
-        public boolean hasXY(int x, int y){
-            return this.x == Grid.centerX(x) && this.y == Grid.centerY(y);
-        }
-
-        public boolean hasXY(int xy){
-            return hasXY(chunks.get(xy).x, chunks.get(xy).y);
-        }
-
         /**
          * @return Tile at the center of this chunk
          */
@@ -230,41 +170,8 @@ public class Grid{
             return tiles.filter(Objects::nonNull);
         }
 
-        public Corners<Tile> cornerTiles(){
-            var mid = this.tile();
-
-            var cX = mid.x - Grid.offset;
-            var cY = mid.y + Grid.offset;
-
-            var topLeft = world.tiles.get(cX, cY);
-            var topRight = world.tiles.get(cX + Grid.size - 1, cY);
-            var botLeft = world.tiles.get(cX, cY - Grid.size + 1);
-            var botRight = world.tiles.get(cX + Grid.size - 1, cY - Grid.size + 1);
-
-            var tiles = new Corners<Tile>();
-            tiles.add(topLeft, topRight, botLeft, botRight);
-            return tiles;
-        }
-
-        public Sides<Tile> sideTiles(){
-            var mid = this.tile();
-
-            var up = world.tiles.get(mid.x, mid.y + 1);
-            var down = world.tiles.get(mid.x, mid.y - 1);
-            var left = world.tiles.get(mid.x - 1, mid.y);
-            var right = world.tiles.get(mid.x + 1, mid.y);
-
-            var tiles = new Sides<Tile>();
-            tiles.add(up, down, left, right);
-            return tiles;
-        }
-
         public int packed(){
             return Point2.pack(this.x, this.y);
-        }
-
-        public Seq<GPos> neighbourSideChunks(){
-            return neighbourChunks(false);
         }
 
         public Seq<GPos> neighbourChunks(boolean corners){
@@ -284,22 +191,6 @@ public class Grid{
             }else{
                 return neighbours.addAll(sideTop, sideBot, sideLeft, sideRight);
             }
-        }
-
-        public boolean breakable(){
-            return !rules.unbreakable.contains(this.packed());
-        }
-
-        public boolean inPlayableRegion(){
-            return rules.playableRegion.contains(this.packed());
-        }
-
-        public boolean inEndGameRegion(){
-            return rules.endGameRegion.contains(this.packed());
-        }
-
-        public boolean isSafe(){
-            return rules.safeChunks.contains(this.packed());
         }
 
         public boolean air(){
@@ -329,42 +220,6 @@ public class Grid{
             if(o == null || getClass() != o.getClass()) return false;
             GPos gPos = (GPos)o;
             return x == gPos.x && y == gPos.y;
-        }
-    }
-
-    public static class Corners<T> extends Seq<T>{
-        public T topLeft(){
-            return this.get(0);
-        }
-
-        public T topRight(){
-            return this.get(1);
-        }
-
-        public T bottomLeft(){
-            return this.get(3);
-        }
-
-        public T bottomRight(){
-            return this.get(4);
-        }
-    }
-
-    public static class Sides<T> extends Seq<T>{
-        public T sideUp(){
-            return this.get(0);
-        }
-
-        public T sideDown(){
-            return this.get(1);
-        }
-
-        public T sideLeft(){
-            return this.get(3);
-        }
-
-        public T sideRight(){
-            return this.get(4);
         }
     }
 }

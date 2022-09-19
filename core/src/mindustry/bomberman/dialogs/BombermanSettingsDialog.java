@@ -70,7 +70,7 @@ public class BombermanSettingsDialog extends BaseDialog{
         buttons.button("@ok", () -> {
             Grid.recalculateChunks();
             Grid.moveAllMarkedChunks(Vars.rules.xOffset - prevXOffset, Vars.rules.yOffset - prevYOffset);
-            Vars.sanitizeRules();
+            Vars.cleanupRules();
             hide();
         });
     }

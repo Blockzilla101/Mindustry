@@ -12,7 +12,6 @@ import arc.scene.event.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.bomberman.*;
-import mindustry.content.*;
 import mindustry.graphics.*;
 import mindustry.input.*;
 import mindustry.ui.*;
@@ -349,7 +348,7 @@ public class MapView extends Element implements GestureListener{
             }
         }
 
-        if(tool == EditorTool.chunkMarker || tool == EditorTool.chunkRemover || tool == EditorTool.teamMarker){
+        if(editor.isBomberman && (tool == EditorTool.chunkMarker || tool == EditorTool.chunkRemover || tool == EditorTool.teamMarker)){
             if(tool == EditorTool.chunkRemover) Draw.color(Pal.redderDust);
 
             Point2 p = project(mousex, mousey);

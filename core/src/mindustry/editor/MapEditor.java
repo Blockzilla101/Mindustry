@@ -18,7 +18,6 @@ import mindustry.maps.*;
 import mindustry.world.*;
 
 import static mindustry.Vars.*;
-import static mindustry.bomberman.Vars.rules;
 
 public class MapEditor{
     public static final float[] brushSizes = {1, 1.5f, 2, 3, 4, 5, 9, 15, 20};
@@ -355,7 +354,7 @@ public class MapEditor{
         renderer.resize(width, height);
         if (isBomberman) {
             Grid.recalculateChunks();
-            Vars.sanitizeRules();
+            Vars.cleanupRules();
         }
         loading = false;
     }
