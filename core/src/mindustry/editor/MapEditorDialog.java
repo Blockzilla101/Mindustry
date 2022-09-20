@@ -486,7 +486,7 @@ public class MapEditorDialog extends Dialog implements Disposable{
                 Cons<EditorTool> addTool = tool -> {
 
                     ImageButton button = new ImageButton(ui.getIcon(tool.name()), Styles.squareTogglei);
-                    if (tool == EditorTool.chunkMarker || tool == EditorTool.chunkRemover || tool == EditorTool.teamMarker) button.setDisabled(() -> editor.isBomberman);
+                    if (tool == EditorTool.chunkMarker || tool == EditorTool.chunkRemover || tool == EditorTool.teamMarker) button.setDisabled(() -> !editor.isBomberman);
                     button.clicked(() -> {
                         view.setTool(tool);
                         if(lastTable[0] != null){

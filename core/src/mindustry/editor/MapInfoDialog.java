@@ -100,12 +100,12 @@ public class MapInfoDialog extends BaseDialog{
                 r.button("Grid Settings", Icon.grid, style, () -> {
                     mindustry.bomberman.Vars.bombermanSettingsDialog.show();
                     hide();
-                }).marginLeft(10f).get().setDisabled(() -> editor.isBomberman);
+                }).marginLeft(10f).get().setDisabled(() -> !editor.isBomberman);
 
                 r.button("Bomberman Rules", Icon.list, style, () -> {
                     mindustry.bomberman.Vars.rulesDialog.show();
                     hide();
-                }).marginLeft(10f).get().setDisabled(() -> editor.isBomberman);
+                }).marginLeft(10f).get().setDisabled(() -> !editor.isBomberman);
 
             }).colspan(2).center();
 
