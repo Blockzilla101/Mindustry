@@ -8,7 +8,7 @@ public class MapRules{
     public int yOffset = 0;
 
     public ObjectMap<Integer, Team> spawns = new ObjectMap<>();
-    public ObjectMap<Team, Seq<Integer>> spawnsByTeam = new ObjectMap<>();
+    public IntMap<Seq<Integer>> spawnsByTeam = new IntMap<>();
     public PlayingStage startingStage = PlayingStage.start;
 
     public IntSeq unbreakable = new IntSeq();

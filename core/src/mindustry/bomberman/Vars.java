@@ -37,8 +37,8 @@ public class Vars{
             if (y > editor.height() || y < 0) return;
             spawns.put(item.key, item.value);
 
-            if (!rules.spawnsByTeam.containsKey(item.value)) rules.spawnsByTeam.put(item.value, new Seq<>());
-            rules.spawnsByTeam.get(item.value).add(item.key);
+            if (!rules.spawnsByTeam.containsKey(item.value.id)) rules.spawnsByTeam.put(item.value.id, new Seq<>());
+            rules.spawnsByTeam.get(item.value.id).add(item.key);
         });
         rules.spawns = spawns;
         rules.unbreakable = cleanupMarkedChunks(rules.unbreakable);

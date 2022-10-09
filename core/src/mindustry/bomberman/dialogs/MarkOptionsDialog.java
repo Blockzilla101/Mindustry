@@ -153,9 +153,6 @@ public class MarkOptionsDialog extends BaseDialog{
         if (getCurrentSelectedMarker() != null) {
             if (!removing) {
                 getCurrentSelectedMarker().addUnique(chunk);
-                if (type == ChunkMarkType.midGameBreakable){
-                    Vars.rules.unbreakable.addUnique(chunk);
-                }
             } else {
                 getCurrentSelectedMarker().removeValue(chunk);
             }
