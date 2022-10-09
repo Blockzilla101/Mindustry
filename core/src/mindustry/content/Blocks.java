@@ -73,7 +73,7 @@ public class Blocks{
     melter, separator, disassembler, sporePress, pulverizer, incinerator, coalCentrifuge,
 
     //crafting - erekir
-    siliconArcFurnace, electrolyzer, oxidationChamber, atmosphericConcentrator, electricHeater, slagHeater, phaseHeater, heatRedirector, slagIncinerator,
+    siliconArcFurnace, electrolyzer, oxidationChamber, atmosphericConcentrator, electricHeater, slagHeater, phaseHeater, heatRedirector, heatRouter, slagIncinerator,
     carbideCrucible, slagCentrifuge, surgeCrucible, cyanogenSynthesizer, phaseSynthesizer, heatReactor,
 
     //sandbox
@@ -1314,6 +1314,17 @@ public class Blocks{
             size = 3;
             drawer = new DrawMulti(new DrawDefault(), new DrawHeatOutput(), new DrawHeatInput("-heat"));
             regionRotated1 = 1;
+        }};
+
+        heatRouter = new HeatConductor("heat-router"){{
+            requirements(Category.crafting, with(Items.tungsten, 15, Items.graphite, 10));
+
+            researchCostMultiplier = 10f;
+
+            size = 3;
+            drawer = new DrawMulti(new DrawDefault(), new DrawHeatOutput(-1, false), new DrawHeatOutput(), new DrawHeatOutput(1, false), new DrawHeatInput("-heat"));
+            regionRotated1 = 1;
+            splitHeat = true;
         }};
 
         slagIncinerator = new ItemIncinerator("slag-incinerator"){{
@@ -2974,7 +2985,7 @@ public class Blocks{
         reinforcedContainer = new StorageBlock("reinforced-container"){{
             requirements(Category.effect, with(Items.tungsten, 30, Items.graphite, 40));
             size = 2;
-            itemCapacity = 75;
+            itemCapacity = 80;
             scaledHealth = 120;
             coreMerge = false;
         }};
@@ -4094,7 +4105,7 @@ public class Blocks{
 
             ammo(
             //TODO 1 more ammo type, decide on base type
-            Items.thorium, new ArtilleryBulletType(2.5f, 310, "shell"){{
+            Items.thorium, new ArtilleryBulletType(2.5f, 350, "shell"){{
                 hitEffect = new MultiEffect(Fx.titanExplosion, Fx.titanSmoke);
                 despawnEffect = Fx.none;
                 knockback = 2f;
@@ -4192,7 +4203,7 @@ public class Blocks{
                 frontColor = Color.white;
                 backColor = trailColor = hitColor = Color.sky;
                 trailChance = 0.44f;
-                ammoMultiplier = 2f;
+                ammoMultiplier = 3f;
 
                 lifetime = 34f;
                 rotationOffset = 90f;
@@ -5807,7 +5818,7 @@ public class Blocks{
         }};
 
         canvas = new CanvasBlock("canvas"){{
-            requirements(Category.logic, BuildVisibility.shown, with(Items.silicon, 40, Items.graphite, 10));
+            requirements(Category.logic, BuildVisibility.shown, with(Items.silicon, 30, Items.beryllium, 10));
 
             canvasSize = 12;
             padding = 7f / 4f * 2f;
