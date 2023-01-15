@@ -37,41 +37,42 @@ public class MarkOptionsDialog extends BaseDialog{
                 t.button("unbreakable", style, () -> {
                     type = ChunkMarkType.unbreakable;
                     hide();
-                }).group(group).checked(b -> type == ChunkMarkType.unbreakable).tooltip("chunks that cannot be broken");
+                }).group(group).tooltip("chunks that cannot be broken");
                 t.button("end region border", style, () -> {
                     type = ChunkMarkType.endRegionWall;
                     hide();
-                }).group(group).checked(b -> type == ChunkMarkType.endRegionWall).tooltip("border Chunks for ending area");
+                }).group(group).tooltip("border Chunks for ending area");
                 t.row();
 
                 t.button("midgame clear", style, () -> {
                     type = ChunkMarkType.midGameClear;
                     hide();
-                }).group(group).checked(b -> type == ChunkMarkType.midGameClear).tooltip("chunks that are cleared when mid game is reached");
+                }).group(group).tooltip("chunks that are cleared when mid game is reached");
                 t.button("midgame breakable", style, () -> {
                     type = ChunkMarkType.midGameBreakable;
                     hide();
-                }).group(group).checked(b -> type == ChunkMarkType.midGameBreakable).tooltip("chunks that are converted to breakable when mid game is reached");
+                }).group(group).tooltip("chunks that are converted to breakable when mid game is reached");
                 t.row();
 
                 t.button("playable", style, () -> {
                     type = ChunkMarkType.playableRegionStarter;
                     hide();
-                }).group(group).checked(b -> type == ChunkMarkType.playableRegionStarter).tooltip("recalculate playable region from chunk");
+                }).group(group).tooltip("recalculate playable region from chunk");
                 t.button("end region", style, () -> {
                     type = ChunkMarkType.endRegionStarter;
                     hide();
-                }).group(group).checked(b -> type == ChunkMarkType.endRegionStarter).tooltip("recalculate end game region from chunk");
+                }).group(group).tooltip("recalculate end game region from chunk");
                 t.row();
 
                 t.button("safe chunk", style, () -> {
                     type = ChunkMarkType.safeChunk;
                     hide();
-                }).group(group).checked(b -> type == ChunkMarkType.safeChunk).tooltip("chunks in which players are immune");
+                }).group(group).tooltip("chunks in which players are immune");
                 t.button("spawn", style, () -> {
                     type = ChunkMarkType.spawn;
                     hide();
-                }).group(group).checked(b -> type == ChunkMarkType.spawn).tooltip("remove spawns");
+                }).group(group).tooltip("remove spawns");
+
             }).fill(false).expand(false, false);
             table.row();
 
@@ -172,19 +173,15 @@ public class MarkOptionsDialog extends BaseDialog{
     }
 
     public Color getTypeColor() {
-        return getTypeColor(type);
-    }
-
-    public Color getTypeColor(ChunkMarkType type) {
         return switch(type){
-            case unbreakable -> Color.cyan;
-            case midGameBreakable -> Color.teal;
-            case midGameClear -> Color.navy;
-            case safeChunk -> Color.green;
-            case endRegionStarter -> Color.red;
-            case playableRegionStarter -> Color.magenta;
-            case endRegionWall -> Color.yellow;
-            default -> Color.gray;
+            case unbreakable -> MarkedChunkSeq.all.get("unbreakable").renderColor;
+            case midGameBreakable -> MarkedChunkSeq.all.get("midgame-breakable").renderColor;
+            case midGameClear -> MarkedChunkSeq.all.get("midgame-clear").renderColor;
+            case safeChunk -> MarkedChunkSeq.all.get("safe").renderColor;
+            case endRegionStarter -> MarkedChunkSeq.all.get("end-region").renderColor;
+            case playableRegionStarter -> MarkedChunkSeq.all.get("playable-region").renderColor;
+            case endRegionWall -> MarkedChunkSeq.all.get("end-region-wall").renderColor;
+            default -> Color.white;
         };
     }
 

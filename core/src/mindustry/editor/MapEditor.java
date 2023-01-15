@@ -75,7 +75,7 @@ public class MapEditor{
     public void loadBomberman(@Nullable MapRules rules) {
         isBomberman = true;
         Vars.rules = rules == null ? new MapRules() : rules;
-        tags.put("bomberman-rules", JsonIO.write(Vars.rules));
+        MarkedChunkSeq.all.each((k, v) -> v.load());
         Grid.reset();
         Grid.recalculateChunks();
     }

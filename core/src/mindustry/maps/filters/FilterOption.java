@@ -34,7 +34,7 @@ public abstract class FilterOption{
 
     public Runnable changed = () -> {};
 
-    static class SliderOption extends FilterOption{
+    public static class SliderOption extends FilterOption{
         final String name;
         final Floatp getter;
         final Floatc setter;
@@ -46,7 +46,7 @@ public abstract class FilterOption{
             this(name, getter, setter, min, max, (max - min) / 200);
         }
 
-        SliderOption(String name, Floatp getter, Floatc setter, float min, float max, float step){
+        public SliderOption(String name, Floatp getter, Floatc setter, float min, float max, float step){
             this.name = name;
             this.getter = getter;
             this.setter = setter;
@@ -62,16 +62,20 @@ public abstract class FilterOption{
 
         @Override
         public void build(Table table){
+            build(table, true);
+        }
+
+        public void build(Table table, boolean addRow){
             Element base;
             if(!display){
-                Label l = new Label("@filter.option." + name);
+                Label l = new Label(Core.bundle.has("@filter.option." + name) ? "@filter.option." + name : name);
                 l.setWrap(true);
                 l.setStyle(Styles.outlineLabel);
                 base = l;
             }else{
                 Table t = new Table().marginLeft(11f).marginRight(11f);
                 base = t;
-                t.add("@filter.option." + name).growX().wrap().style(Styles.outlineLabel);
+                t.add(Core.bundle.has("@filter.option." + name) ? "@filter.option." + name : name).growX().wrap().style(Styles.outlineLabel);
                 t.label(() -> Strings.autoFixed(getter.get(), 2)).style(Styles.outlineLabel).right().labelAlign(Align.right).padLeft(6);
             }
             base.touchable = Touchable.disabled;
@@ -85,7 +89,8 @@ public abstract class FilterOption{
                 slider.released(changed);
             }
 
-            table.stack(slider, base).colspan(2).pad(3).growX().row();
+            table.stack(slider, base).colspan(2).pad(3).growX();
+            if (addRow) table.row();
         }
     }
 

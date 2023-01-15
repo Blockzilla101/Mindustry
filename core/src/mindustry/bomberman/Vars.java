@@ -1,5 +1,6 @@
 package mindustry.bomberman;
 
+import arc.*;
 import arc.struct.*;
 import mindustry.bomberman.MapRules.*;
 import mindustry.bomberman.dialogs.*;
@@ -12,7 +13,7 @@ public class Vars{
     public static BombermanGridImage gridImage = new BombermanGridImage(0, 0);
     public static RegionGridImage regionImage = new RegionGridImage(0, 0);
 
-    public static BombermanSettingsDialog bombermanSettingsDialog = new BombermanSettingsDialog();
+    public static RegionRenderSettingsDialog regionRenderSettingsDialog = new RegionRenderSettingsDialog();
     public static MapRulesDialog rulesDialog = new MapRulesDialog();
     public static MarkOptionsDialog markOptions = new MarkOptionsDialog();
     public static TeamSelectorDialog teamSelector = new TeamSelectorDialog();
@@ -25,6 +26,13 @@ public class Vars{
         regionImage.setImageSize(0, 0);
         EditorState.renderRegions = false;
         EditorState.gridEnabled = false;
+
+        if (Core.settings.getInt("bomberman.version", 0) == 0) {
+            MarkedChunkSeq.all.each((k, v) -> v.save());
+            Core.settings.put("bomberman.version", 1);
+        }
+
+        MarkedChunkSeq.all.each((k, v) -> v.load());
     }
 
     public static void cleanupRules() {
@@ -41,19 +49,14 @@ public class Vars{
             rules.spawnsByTeam.get(item.value.id).add(item.key);
         });
         rules.spawns = spawns;
-        rules.unbreakable = cleanupMarkedChunks(rules.unbreakable);
-        rules.playableRegion = cleanupMarkedChunks(rules.playableRegion);
-        rules.endGameRegion = cleanupMarkedChunks(rules.endGameRegion);
-        rules.endGameRegionWalls = cleanupMarkedChunks(rules.endGameRegionWalls);
-        rules.midGameClearChunks = cleanupMarkedChunks(rules.midGameClearChunks);
-        rules.midGameBreakableChunks = cleanupMarkedChunks(rules.midGameBreakableChunks);
-        rules.safeChunks = cleanupMarkedChunks(rules.safeChunks);
+        MarkedChunkSeq.all.each((m, v) -> cleanupMarkedChunks(v));
         if (rules.startingStage == PlayingStage.mid || rules.startingStage == PlayingStage.end) rules.startStageLength = 0;
         if (rules.startingStage == PlayingStage.end) rules.midStageLength = 0;
     }
 
-    private static IntSeq cleanupMarkedChunks(IntSeq map){
+    private static void cleanupMarkedChunks(MarkedChunkSeq map){
         var temp = new IntSeq();
+
         map.each(chunk -> {
             var x = Grid.unpackX(chunk);
             var y = Grid.unpackY(chunk);
@@ -61,6 +64,8 @@ public class Vars{
             if (y > editor.height() || y < 0) return;
             temp.addUnique(chunk);
         });
-        return temp;
+
+        map.clear();
+        map.addAll(temp);
     }
 }

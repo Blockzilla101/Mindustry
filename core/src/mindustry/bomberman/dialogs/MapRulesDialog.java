@@ -16,10 +16,15 @@ import mindustry.ui.dialogs.*;
 import static mindustry.Vars.ui;
 
 public class MapRulesDialog extends BaseDialog{
+    public boolean invert = false;
     int startStageLength, midStageLength, endStageLength;
     PlayingStage startingStage;
 
-    Table table = new Table();
+    private int prevXOffset;
+    private int prevYOffset;
+    private boolean prevInvert;
+
+    private Table table = new Table();
 
     public MapRulesDialog(){
         super("Bomberman Map Rules");
@@ -28,6 +33,10 @@ public class MapRulesDialog extends BaseDialog{
         shown(() -> {
             cont.clear();
             table.clear();
+
+            prevXOffset = Vars.rules.xOffset;
+            prevYOffset = Vars.rules.yOffset;
+            prevInvert = invert;
 
             startStageLength = Vars.rules.startStageLength / 1000;
             midStageLength = Vars.rules.midStageLength / 1000;
@@ -68,18 +77,63 @@ public class MapRulesDialog extends BaseDialog{
                 t.label(() -> "End Stage: [lightgray](sec)").expand(false, false);
                 t.field(String.valueOf(endStageLength), TextFieldFilter.digitsOnly, s -> endStageLength = Strings.parseInt(s)).expand(false, false);
             });
+            table.row();
+
+            title("Grid Settings");
+            table.table(t -> {
+                t.label(() -> "X Offset");
+                t.slider(0, 2, 1, Vars.rules.xOffset, val -> Vars.rules.xOffset = (int)val);
+            });
+            table.row();
+
+            table.table(t -> {
+                t.label(() -> "Y Offset");
+                t.slider(0, 2, 1, Vars.rules.yOffset, val -> Vars.rules.yOffset = (int)val);
+            });
+            table.row();
+
+
+            table.check("Invert", invert, v -> invert = v);
+            table.row();
+
+            table.button("Clear marked regions", () -> {
+                Vars.rules.unbreakable.clear();
+                Vars.rules.playableRegion.clear();
+                Vars.rules.endGameRegion.clear();
+                Vars.rules.endGameRegionWalls.clear();
+                Vars.rules.midGameClearChunks.clear();
+                Vars.rules.midGameBreakableChunks.clear();
+                Vars.rules.safeChunks.clear();
+            }).growX();
+
+            table.row();
+            table.button("Clear spawns", () -> {
+                Vars.rules.spawns.clear();
+            }).growX();
 
             cont.row();
             cont.add(table).center();
         });
 
         buttons.defaults().size(200f, 50f);
-        buttons.button("@cancel", this::hide);
+        buttons.button("@cancel", () -> {
+            Vars.rules.xOffset = prevXOffset;
+            Vars.rules.yOffset = prevYOffset;
+            invert = prevInvert;
+            hide();
+        });
         buttons.button("@ok", () -> {
             Vars.rules.startStageLength = startStageLength * 1000;
             Vars.rules.midStageLength = midStageLength * 1000;
             Vars.rules.endStageLength = endStageLength * 1000;
             Vars.rules.startingStage = startingStage;
+
+            if (Vars.rules.xOffset != prevXOffset || Vars.rules.yOffset != prevYOffset) {
+                Grid.recalculateChunks();
+                Grid.moveAllMarkedChunks(Vars.rules.xOffset - prevXOffset, Vars.rules.yOffset - prevYOffset);
+                Vars.cleanupRules();
+            }
+
             hide();
         });
     }

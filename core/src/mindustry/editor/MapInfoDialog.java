@@ -97,8 +97,8 @@ public class MapInfoDialog extends BaseDialog{
 
                 r.row();
 
-                r.button("Grid Settings", Icon.grid, style, () -> {
-                    mindustry.bomberman.Vars.bombermanSettingsDialog.show();
+                r.button("Render Settings", Icon.image, style, () -> {
+                    mindustry.bomberman.Vars.regionRenderSettingsDialog.show();
                     hide();
                 }).marginLeft(10f).get().setDisabled(() -> !editor.isBomberman);
 
