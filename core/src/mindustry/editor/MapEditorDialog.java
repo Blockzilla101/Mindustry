@@ -674,13 +674,6 @@ public class MapEditorDialog extends Dialog implements Disposable{
                     t.check("Toggle Regions", (checked) -> EditorState.renderRegions = checked).visible(() -> editor.isBomberman).growX().margin(9f).left();
                 }).growX().top();
 
-                mid.row();
-                mid.table(t -> {
-                    t.button("mark options", () -> {
-                        mindustry.bomberman.Vars.markOptions.show();
-                    }).growX().visible(() -> editor.isBomberman).margin(9f).left();
-                }).growX().top();
-
             }).margin(0).left().growY();
 
             cont.table(t -> t.add(view).grow()).grow();

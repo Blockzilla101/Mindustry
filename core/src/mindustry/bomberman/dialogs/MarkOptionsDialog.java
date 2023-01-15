@@ -37,41 +37,41 @@ public class MarkOptionsDialog extends BaseDialog{
                 t.button("unbreakable", style, () -> {
                     type = ChunkMarkType.unbreakable;
                     hide();
-                }).group(group).tooltip("chunks that cannot be broken");
+                }).group(group).tooltip("chunks that cannot be broken").checked((b) -> type == ChunkMarkType.unbreakable);
                 t.button("end region border", style, () -> {
                     type = ChunkMarkType.endRegionWall;
                     hide();
-                }).group(group).tooltip("border Chunks for ending area");
+                }).group(group).tooltip("border Chunks for ending area").checked((b) -> type == ChunkMarkType.endRegionWall);
                 t.row();
 
                 t.button("midgame clear", style, () -> {
                     type = ChunkMarkType.midGameClear;
                     hide();
-                }).group(group).tooltip("chunks that are cleared when mid game is reached");
+                }).group(group).tooltip("chunks that are cleared when mid game is reached").checked((b) -> type == ChunkMarkType.midGameClear);
                 t.button("midgame breakable", style, () -> {
                     type = ChunkMarkType.midGameBreakable;
                     hide();
-                }).group(group).tooltip("chunks that are converted to breakable when mid game is reached");
+                }).group(group).tooltip("chunks that are converted to breakable when mid game is reached").checked((b) -> type == ChunkMarkType.midGameBreakable);
                 t.row();
 
                 t.button("playable", style, () -> {
                     type = ChunkMarkType.playableRegionStarter;
                     hide();
-                }).group(group).tooltip("recalculate playable region from chunk");
+                }).group(group).tooltip("recalculate playable region from chunk").checked((b) -> type == ChunkMarkType.playableRegionStarter);
                 t.button("end region", style, () -> {
                     type = ChunkMarkType.endRegionStarter;
                     hide();
-                }).group(group).tooltip("recalculate end game region from chunk");
+                }).group(group).tooltip("recalculate end game region from chunk").checked((b) -> type == ChunkMarkType.endRegionStarter);
                 t.row();
 
                 t.button("safe chunk", style, () -> {
                     type = ChunkMarkType.safeChunk;
                     hide();
-                }).group(group).tooltip("chunks in which players are immune");
+                }).group(group).tooltip("chunks in which players are immune").checked((b) -> type == ChunkMarkType.safeChunk);
                 t.button("spawn", style, () -> {
                     type = ChunkMarkType.spawn;
                     hide();
-                }).group(group).tooltip("remove spawns");
+                }).group(group).tooltip("remove spawns").checked((b) -> type == ChunkMarkType.spawn);
 
             }).fill(false).expand(false, false);
             table.row();
