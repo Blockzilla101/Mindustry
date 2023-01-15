@@ -1,6 +1,8 @@
 package mindustry.bomberman.dialogs;
 
+import arc.*;
 import arc.graphics.*;
+import arc.input.*;
 import arc.math.geom.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
@@ -145,9 +147,20 @@ public class MarkOptionsDialog extends BaseDialog{
             start = temp;
         }
 
+        var skipOther = this.skipOther();
         for(var i = start; i <= end; i += Grid.size) {
+            if (i % 2 == skipOther && skipOther >= 0) continue;
             updateMark(Point2.pack(x1 == x2 ? x1 : i, y1 == y2 ? y1 : i), removing);
         }
+    }
+
+    public int skipOther() {
+        if (Core.input.keyDown(KeyCode.space)) {
+            return 0;
+        } else if (Core.input.keyDown(KeyCode.altLeft)) {
+            return 1;
+        }
+        return -1;
     }
 
     public void updateMark(int chunk, boolean removing) {

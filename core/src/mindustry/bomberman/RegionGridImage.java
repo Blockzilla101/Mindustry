@@ -44,7 +44,6 @@ public class RegionGridImage extends Element{
     void renderMarkedChunks(MarkedChunkSeq chunks){
         float xspace = (getWidth() / imageWidth);
         float yspace = (getHeight() / imageHeight);
-        float s = 1f;
 
         Draw.color(chunks.renderColor);
         Draw.alpha(chunks.renderOpacity);
@@ -52,7 +51,7 @@ public class RegionGridImage extends Element{
             var x = Grid.unpackX(c) - Grid.offset;
             var y = Grid.unpackY(c) - Grid.offset;
             var offset = EditorState.gridEnabled ? 2 : 0;
-            Fill.crect((int)(this.x + xspace * x - s + offset), (int)(this.y + y * yspace - s + offset), Grid.size * xspace - offset, Grid.size * yspace - offset);
+            Fill.crect((int)(this.x + xspace * x + offset), (int)(this.y + y * yspace + offset), Grid.size * xspace - offset, Grid.size * yspace - offset);
         });
     }
 
