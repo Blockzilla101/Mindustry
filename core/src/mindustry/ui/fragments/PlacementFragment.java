@@ -421,10 +421,19 @@ public class PlacementFragment{
 
                 frame.add(mainStack).colspan(3).fill();
 
+                frame.row();
+
+                //for better inset visuals at the bottom
+                frame.rect((x, y, w, h) -> {
+                    if(Core.scene.marginBottom > 0){
+                        Tex.paneLeft.draw(x, 0, w, y);
+                    }
+                }).colspan(3).fillX().row();
+
                 //commandTable: commanded units
                 {
                     commandTable.touchable = Touchable.enabled;
-                    commandTable.add("[accent]Command Mode").fill().center().labelAlign(Align.center).row();
+                    commandTable.add(Core.bundle.get("commandmode.name")).fill().center().labelAlign(Align.center).row();
                     commandTable.image().color(Pal.accent).growX().pad(20f).padTop(0f).padBottom(4f).row();
                     commandTable.table(u -> {
                         u.left();
@@ -494,7 +503,7 @@ public class PlacementFragment{
                                     }).fillX().padTop(4f).left();
                                 }
                             }else{
-                                u.add("[no units]").color(Color.lightGray).growX().center().labelAlign(Align.center).pad(6);
+                                u.add(Core.bundle.get("commandmode.nounits")).color(Color.lightGray).growX().center().labelAlign(Align.center).pad(6);
                             }
                         };
 
