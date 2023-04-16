@@ -10,6 +10,7 @@ import mindustry.bomberman.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.world.*;
+
 import static mindustry.Vars.*;
 
 public enum EditorTool{

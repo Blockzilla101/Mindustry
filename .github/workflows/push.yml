@@ -16,7 +16,6 @@ jobs:
         uses: gradle/gradle-build-action@v2
       - name: Run unit tests
         run: ./gradlew clean cleanTest test --stacktrace
-
   build:
     runs-on: ubuntu-latest
     steps:
