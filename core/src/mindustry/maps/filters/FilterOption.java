@@ -113,6 +113,7 @@ public abstract class FilterOption{
                 .setRegion(supplier.get() == Blocks.air ? Icon.none.getRegion() : supplier.get().uiIcon)).size(iconSmall), () -> {
                 BaseDialog dialog = new BaseDialog("@filter.option." + name);
                 dialog.cont.pane(t -> {
+                    t.margin(14f);
                     int i = 0;
                     for(Block block : Vars.content.blocks()){
                         if(!filter.get(block)) continue;
@@ -125,7 +126,7 @@ public abstract class FilterOption{
                         if(++i % 10 == 0) t.row();
                     }
                     dialog.setFillParent(i > 100);
-                }).padRight(8f).scrollX(false);
+                }).scrollX(false);
 
 
                 dialog.addCloseButton();
