@@ -34,21 +34,21 @@ public class RegionRenderSettingsDialog extends BaseDialog{
 
             title("Per Region Type");
 
-            MarkedChunkSeq.all.each((name, region) -> {
+            for(var item: ChunkSettings.all) {
                 table.table(t -> {
-                    (new FilterOption.SliderOption(name, () -> region.renderOpacity, f -> region.renderOpacity = f, 0f, 1f, 0.05f)).build(t, false);
+                    (new FilterOption.SliderOption(name, () -> item.opacity, f -> item.opacity = f, 0f, 1f, 0.05f)).build(t, false);
                     t.button(b -> {
                         b.left();
                         b.table(Tex.pane, in -> {
                             in.stack(new Image(Tex.alphaBg), new Image(Tex.whiteui){{
-                                update(() -> setColor(region.renderColor));
+                                update(() -> setColor(item.color));
                             }}).grow();
                         }).margin(4).size(50f).padRight(10);
                         b.add("Region Color");
-                    }, () -> ui.picker.show(region.renderColor, region.renderColor::set)).left().width(250f).row();
+                    }, () -> ui.picker.show(item.color, item.color::set)).left().width(250f).row();
                 });
                 table.row();
-            });
+            }
 
             cont.row();
             cont.add(table);
@@ -76,12 +76,12 @@ public class RegionRenderSettingsDialog extends BaseDialog{
     void load(){
         renderSpawns = Core.settings.getBool("bomberman.render-settings.render-spawns", true);
         renderAllRegions = Core.settings.getBool("bomberman.render-settings.render-all", true);
-        MarkedChunkSeq.all.each((k, v) -> v.load());
+        ChunkSettings.load();
     }
 
     void save(){
         Core.settings.put("bomberman.render-settings.render-spawns", renderSpawns);
         Core.settings.put("bomberman.render-settings.render-all", renderAllRegions);
-        MarkedChunkSeq.all.each((k, v) -> v.save());
+        ChunkSettings.save();
     }
 }

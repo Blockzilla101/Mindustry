@@ -333,8 +333,7 @@ public class MapEditorDialog extends Dialog implements Disposable{
         editor.tags.put("rules", JsonIO.write(state.rules));
         if(editor.isBomberman) {
             mindustry.bomberman.Vars.cleanupRules();
-            editor.tags.put("bomberman-rules", JsonIO.write(mindustry.bomberman.Vars.rules));
-            MarkedChunkSeq.updateAllMap();
+            editor.tags.put("bomberman-rules", gson.toJson(mindustry.bomberman.Vars.rules));
         }
         editor.tags.remove("width");
         editor.tags.remove("height");

@@ -12,13 +12,13 @@ public class MapRules{
     public IntMap<Seq<Integer>> spawnsByTeam = new IntMap<>();
     public PlayingStage startingStage = PlayingStage.start;
 
-    public MarkedChunkSeq unbreakable = new MarkedChunkSeq("unbreakable", Color.cyan);
-    public MarkedChunkSeq playableRegion = new MarkedChunkSeq("playable-region", Color.magenta);
-    public MarkedChunkSeq endGameRegion = new MarkedChunkSeq("end-region", Color.red);
-    public MarkedChunkSeq endGameRegionWalls = new MarkedChunkSeq("end-region-wall", Color.yellow);
-    public MarkedChunkSeq midGameClearChunks = new MarkedChunkSeq("midgame-clear", Color.teal);
-    public MarkedChunkSeq midGameBreakableChunks = new MarkedChunkSeq("midgame-breakable", Color.navy);
-    public MarkedChunkSeq safeChunks = new MarkedChunkSeq("safe", Color.green);
+    public IntSeq unbreakable = new IntSeq();
+    public IntSeq playableRegion = new IntSeq();
+    public IntSeq endGameRegion = new IntSeq();
+    public IntSeq endGameRegionWalls = new IntSeq();
+    public IntSeq midGameClearChunks = new IntSeq();
+    public IntSeq midGameBreakableChunks = new IntSeq();
+    public IntSeq safeChunks = new IntSeq();
 
     public int startStageLength = 15 * 60 * 1000;
     public int midStageLength = 5 * 60 * 1000;

@@ -65,8 +65,9 @@ public class MapEditor{
 
         if(map.tags.containsKey("bomberman-rules")) {
             try {
-                loadBomberman(JsonIO.read(MapRules.class, map.tags.get("bomberman-rules")));
-            } catch (Exception ignored) {
+                loadBomberman(gson.fromJson(map.tags.get("bomberman-rules"), MapRules.class));
+            } catch (Exception e) {
+                Log.err("Error loading previous bomberman data", e);
                 map.tags.put("bomberman-rules", "{}");
                 loadBomberman(null);
             }
@@ -80,7 +81,7 @@ public class MapEditor{
     public void loadBomberman(@Nullable MapRules rules) {
         isBomberman = true;
         Vars.rules = rules == null ? new MapRules() : rules;
-        MarkedChunkSeq.all.each((k, v) -> v.load());
+        ChunkSettings.load();
         Grid.reset();
         Grid.recalculateChunks();
     }

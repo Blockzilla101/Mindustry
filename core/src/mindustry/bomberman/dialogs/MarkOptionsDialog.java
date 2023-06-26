@@ -187,13 +187,13 @@ public class MarkOptionsDialog extends BaseDialog{
 
     public Color getTypeColor() {
         return switch(type){
-            case unbreakable -> MarkedChunkSeq.all.get("unbreakable").renderColor;
-            case midGameBreakable -> MarkedChunkSeq.all.get("midgame-breakable").renderColor;
-            case midGameClear -> MarkedChunkSeq.all.get("midgame-clear").renderColor;
-            case safeChunk -> MarkedChunkSeq.all.get("safe").renderColor;
-            case endRegionStarter -> MarkedChunkSeq.all.get("end-region").renderColor;
-            case playableRegionStarter -> MarkedChunkSeq.all.get("playable-region").renderColor;
-            case endRegionWall -> MarkedChunkSeq.all.get("end-region-wall").renderColor;
+            case unbreakable -> ChunkSettings.unbreakable.color;
+            case midGameBreakable -> ChunkSettings.midGameBreakable.color;
+            case midGameClear -> ChunkSettings.midGameClear.color;
+            case safeChunk -> ChunkSettings.safe.color;
+            case endRegionStarter -> ChunkSettings.endRegion.color;
+            case playableRegionStarter -> ChunkSettings.playableRegion.color;
+            case endRegionWall -> ChunkSettings.endRegionWall.color;
             default -> Color.white;
         };
     }

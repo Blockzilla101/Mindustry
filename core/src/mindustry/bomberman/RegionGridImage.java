@@ -21,7 +21,10 @@ public class RegionGridImage extends Element{
     public void draw(){
         if(!editor.isBomberman) return;
 
-        MarkedChunkSeq.all.each((k, v) -> renderMarkedChunks(v));
+        for(var item: ChunkSettings.all) {
+            if (!item.render) continue;
+            renderMarkedChunks(item);
+        }
 
         float xspace = (getWidth() / imageWidth);
         float yspace = (getHeight() / imageHeight);
@@ -41,13 +44,13 @@ public class RegionGridImage extends Element{
         }
     }
 
-    void renderMarkedChunks(MarkedChunkSeq chunks){
+    void renderMarkedChunks(ChunkSettings chunk){
         float xspace = (getWidth() / imageWidth);
         float yspace = (getHeight() / imageHeight);
 
-        Draw.color(chunks.renderColor);
-        Draw.alpha(chunks.renderOpacity);
-        chunks.each(c -> {
+        Draw.color(chunk.color);
+        Draw.alpha(chunk.opacity);
+        chunk.prov.get().each(c -> {
             var x = Grid.unpackX(c) - Grid.offset;
             var y = Grid.unpackY(c) - Grid.offset;
             var offset = EditorState.gridEnabled ? 2 : 0;

@@ -26,13 +26,6 @@ public class Vars{
         regionImage.setImageSize(0, 0);
         EditorState.renderRegions = false;
         EditorState.gridEnabled = false;
-
-        if (Core.settings.getInt("bomberman.version", 0) == 0) {
-            MarkedChunkSeq.all.each((k, v) -> v.save());
-            Core.settings.put("bomberman.version", 1);
-        }
-
-        MarkedChunkSeq.all.each((k, v) -> v.load());
     }
 
     public static void cleanupRules() {
@@ -49,12 +42,16 @@ public class Vars{
             rules.spawnsByTeam.get(item.value.id).add(item.key);
         });
         rules.spawns = spawns;
-        MarkedChunkSeq.all.each((m, v) -> cleanupMarkedChunks(v));
+
+        for(var item: ChunkSettings.all) {
+            cleanupMarkedChunks(item.prov.get());
+        }
+
         if (rules.startingStage == PlayingStage.mid || rules.startingStage == PlayingStage.end) rules.startStageLength = 0;
         if (rules.startingStage == PlayingStage.end) rules.midStageLength = 0;
     }
 
-    private static void cleanupMarkedChunks(MarkedChunkSeq map){
+    private static void cleanupMarkedChunks(IntSeq map){
         var temp = new IntSeq();
 
         map.each(chunk -> {
