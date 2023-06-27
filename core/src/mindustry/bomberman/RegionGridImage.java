@@ -4,6 +4,8 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.scene.*;
 import arc.struct.*;
+import arc.input.*;
+import arc.*;
 import mindustry.bomberman.dialogs.MarkOptionsDialog.*;
 import mindustry.content.*;
 
@@ -60,7 +62,7 @@ public class RegionGridImage extends Element{
 
     @Override
     public void updateVisibility(){
-        this.visible = editor.isBomberman && EditorState.renderRegions && state.isEditor();
+        this.visible = editor.isBomberman && (EditorState.renderRegions || Core.input.keyDown(KeyCode.x)) && state.isEditor();
     }
 
     public void setImageSize(int w, int h){

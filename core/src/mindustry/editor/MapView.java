@@ -295,7 +295,7 @@ public class MapView extends Element implements GestureListener{
             Draw.reset();
         }
 
-        if((EditorState.renderRegions || EditorState.toolRenderRegions) && editor.isBomberman){
+        if((EditorState.renderRegions || EditorState.toolRenderRegions || Core.input.keyDown(KeyCode.x)) && editor.isBomberman){
             Draw.color(Color.gray);
             Vars.regionImage.setBounds(centerx - sclwidth / 2, centery - sclheight / 2, sclwidth, sclheight);
             Vars.regionImage.draw();
