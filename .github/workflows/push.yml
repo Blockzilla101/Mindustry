@@ -73,12 +73,12 @@ jobs:
       - name: build
         run: ./gradlew pack desktop:dist android:assembleDebug
       - name: upload desktop jar
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: Mindustry.jar
           path: desktop/build/libs/Mindustry.jar
       - name: upload android apk
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: Mindustry.apk
           path: android/build/outputs/apk/debug/android-debug.apk
