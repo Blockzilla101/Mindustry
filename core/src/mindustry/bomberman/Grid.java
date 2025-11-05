@@ -127,13 +127,6 @@ public class Grid{
      */
     public static class GPos{
         private static final IntMap<GPos> chunks = new IntMap<>();
-
-        public static GPos create(int x, int y){
-            var chunk = new GPos(x, y);
-            chunks.put(chunk.packed(), chunk);
-            return chunk;
-        }
-
         public int x, y;
 
         public GPos(int x, int y, boolean center){
@@ -143,6 +136,29 @@ public class Grid{
 
         public GPos(int x, int y){
             this(x, y, true);
+        }
+
+        public static GPos create(int x, int y){
+            var chunk = new GPos(x, y);
+            chunks.put(chunk.packed(), chunk);
+            return chunk;
+        }
+
+        /**
+         * @param x x pos of a tile in the chunk
+         * @param y y pos of a tile in the chunk
+         * @return Creates a chunk from x and y
+         */
+        public static GPos from(int x, int y){
+            return from(Point2.pack(Grid.centerX(x), Grid.centerY(y)));
+        }
+
+        public static GPos from(Tile tile){
+            return from(tile.x, tile.y);
+        }
+
+        public static GPos from(int xy){
+            return chunks.get(xy);
         }
 
         /**
@@ -167,7 +183,7 @@ public class Grid{
                 }
             }
 
-            return tiles.filter(Objects::nonNull);
+            return tiles.retainAll(Objects::nonNull);
         }
 
         public int packed(){
@@ -195,23 +211,6 @@ public class Grid{
 
         public boolean air(){
             return this.tile().block().isAir();
-        }
-
-        /**
-         * @param x x pos of a tile in the chunk
-         * @param y y pos of a tile in the chunk
-         * @return Creates a chunk from x and y
-         */
-        public static GPos from(int x, int y){
-            return from(Point2.pack(Grid.centerX(x), Grid.centerY(y)));
-        }
-
-        public static GPos from(Tile tile){
-            return from(tile.x, tile.y);
-        }
-
-        public static GPos from(int xy){
-            return chunks.get(xy);
         }
 
         @Override

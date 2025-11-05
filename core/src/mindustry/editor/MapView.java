@@ -19,21 +19,22 @@ import mindustry.ui.*;
 
 import static mindustry.Vars.*;
 
-public class MapView extends Element implements GestureListener{
-    EditorTool tool = Vars.mobile ? EditorTool.zoom : EditorTool.pencil;
-    private float offsetx, offsety;
-    private float zoom = 1f;
-    private boolean grid = false;
-    private GridImage image = new GridImage(0, 0);
-    private Vec2 vec = new Vec2();
-    private Rect rect = new Rect();
-    private Vec2[][] brushPolygons = new Vec2[MapEditor.brushSizes.length][0];
+import mindustry.bomberman.Vars;
 
+public class MapView extends Element implements GestureListener{
+    private final GridImage image = new GridImage(0, 0);
+    private final Vec2 vec = new Vec2();
+    private final Rect rect = new Rect();
+    private final Vec2[][] brushPolygons = new Vec2[MapEditor.brushSizes.length][0];
+    public EditorTool lastTool;
+    EditorTool tool = mobile ? EditorTool.zoom : EditorTool.pencil;
     boolean drawing;
     int lastx, lasty;
     int startx, starty;
     float mousex, mousey;
-    public EditorTool lastTool;
+    private float offsetx, offsety;
+    private float zoom = 1f;
+    private boolean grid = false;
 
     public MapView(){
 
@@ -168,11 +169,7 @@ public class MapView extends Element implements GestureListener{
     }
 
     public void setTool(EditorTool tool){
-        if(tool == EditorTool.chunkMarker || tool == EditorTool.chunkRemover || tool == EditorTool.teamMarker){
-            EditorState.toolRenderRegions = true;
-        }else{
-            EditorState.toolRenderRegions = false;
-        }
+        EditorState.toolRenderRegions = tool == EditorTool.chunkMarker || tool == EditorTool.chunkRemover || tool == EditorTool.teamMarker;
         tool.selected();
         this.tool = tool;
     }
