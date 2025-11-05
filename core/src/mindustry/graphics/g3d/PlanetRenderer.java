@@ -31,7 +31,7 @@ public class PlanetRenderer implements Disposable{
         setThreshold(0.8f);
         blurPasses = 6;
     }};
-    public final Mesh atmosphere = MeshBuilder.buildHex(Color.white, 2, false, 1.5f);
+    public final Mesh atmosphere = MeshBuilder.buildHex(Color.white, 2, 1.5f);
 
     //seed: 8kmfuix03fw
     public final CubemapMesh skybox = new CubemapMesh(new Cubemap("cubemaps/stars/"));
@@ -102,8 +102,9 @@ public class PlanetRenderer implements Disposable{
 
         Events.fire(Trigger.universeDraw);
 
-        renderPlanet(params.solarSystem, params);
-        renderTransparent(params.solarSystem, params);
+        Planet solarSystem = params.planet.solarSystem;
+        renderPlanet(solarSystem, params);
+        renderTransparent(solarSystem, params);
 
         bloom.render();
 
@@ -113,6 +114,9 @@ public class PlanetRenderer implements Disposable{
 
         if(params.renderer != null){
             params.renderer.renderProjections(params.planet);
+
+            batch.proj().mul(params.planet.getTransform(mat));
+            params.renderer.renderOverProjections(params.planet);
         }
 
         Gl.disable(Gl.cullFace);
@@ -175,6 +179,10 @@ public class PlanetRenderer implements Disposable{
         planet.renderSectors(batch, cam, params);
     }
 
+    public void drawArcLine(Planet planet, Vec3 a, Vec3 b){
+        drawArcLine(planet, a, b, Pal.accent, Tmp.c3.set(Pal.accent).a(0f), 1f, 80f, 25, 0.006f);
+    }
+
     public void drawArc(Planet planet, Vec3 a, Vec3 b){
         drawArc(planet, a, b, Pal.accent, Color.clear, 1f);
     }
@@ -185,6 +193,10 @@ public class PlanetRenderer implements Disposable{
 
     public void drawArc(Planet planet, Vec3 a, Vec3 b, Color from, Color to, float length, float timeScale, int pointCount){
         planet.drawArc(batch, a, b, from, to, length, timeScale, pointCount);
+    }
+
+    public void drawArcLine(Planet planet, Vec3 a, Vec3 b, Color from, Color to, float length, float timeScale, int pointCount, float stroke){
+        planet.drawArcLine(batch, a, b, from, to, length, timeScale, pointCount, stroke);
     }
 
     public void drawBorders(Sector sector, Color base, float alpha){
@@ -202,17 +214,7 @@ public class PlanetRenderer implements Disposable{
     }
 
     public void setPlane(Sector sector){
-        float rotation = -sector.planet.getRotation();
-        float length = 0.01f;
-
-        projector.setPlane(
-        //origin on sector position
-        Tmp.v33.set(sector.tile.v).setLength((outlineRad + length) * sector.planet.radius).rotate(Vec3.Y, rotation).add(sector.planet.position),
-        //face up
-        sector.plane.project(Tmp.v32.set(sector.tile.v).add(Vec3.Y)).sub(sector.tile.v, sector.planet.radius).rotate(Vec3.Y, rotation).nor(),
-        //right vector
-        Tmp.v31.set(Tmp.v32).rotate(Vec3.Y, -rotation).add(sector.tile.v).rotate(sector.tile.v, 90).sub(sector.tile.v).rotate(Vec3.Y, rotation).nor()
-        );
+        sector.planet.setPlane(sector, projector);
     }
 
     public void fill(Sector sector, Color color, float offset){
@@ -239,5 +241,6 @@ public class PlanetRenderer implements Disposable{
     public interface PlanetInterfaceRenderer{
         void renderSectors(Planet planet);
         void renderProjections(Planet planet);
+        default void renderOverProjections(Planet planet){}
     }
 }

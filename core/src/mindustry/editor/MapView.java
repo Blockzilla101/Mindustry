@@ -11,6 +11,7 @@ import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.bomberman.*;
 import mindustry.graphics.*;
 import mindustry.input.*;
@@ -19,7 +20,7 @@ import mindustry.ui.*;
 import static mindustry.Vars.*;
 
 public class MapView extends Element implements GestureListener{
-    EditorTool tool = EditorTool.pencil;
+    EditorTool tool = Vars.mobile ? EditorTool.zoom : EditorTool.pencil;
     private float offsetx, offsety;
     private float zoom = 1f;
     private boolean grid = false;
@@ -72,7 +73,7 @@ public class MapView extends Element implements GestureListener{
                 if(!mobile && button != KeyCode.mouseLeft && button != KeyCode.mouseMiddle && button != KeyCode.mouseRight){
                     return true;
                 }
-                
+
                 if(button == KeyCode.mouseRight){
                     lastTool = tool;
                     if(tool == EditorTool.chunkMarker || tool == EditorTool.chunkRemover || tool == EditorTool.teamMarker){
@@ -193,18 +194,18 @@ public class MapView extends Element implements GestureListener{
         super.act(delta);
 
         if(Core.scene.getKeyboardFocus() == null || !Core.scene.hasField() && !Core.input.keyDown(KeyCode.controlLeft)){
-            float ax = Core.input.axis(Binding.move_x);
-            float ay = Core.input.axis(Binding.move_y);
+            float ax = Core.input.axis(Binding.moveX);
+            float ay = Core.input.axis(Binding.moveY);
             offsetx -= ax * 15 * Time.delta / zoom;
             offsety -= ay * 15 * Time.delta / zoom;
         }
 
-        if(Core.input.keyTap(KeyCode.shiftLeft)){
+        if(Core.input.keyTap(KeyCode.shiftLeft) || Core.input.keyTap(KeyCode.altLeft)){
             lastTool = tool;
             tool = EditorTool.pick;
         }
 
-        if(Core.input.keyRelease(KeyCode.shiftLeft) && lastTool != null){
+        if((Core.input.keyRelease(KeyCode.shiftLeft) || Core.input.keyRelease(KeyCode.altLeft)) && lastTool != null){
             tool = lastTool;
             lastTool = null;
         }
@@ -219,7 +220,7 @@ public class MapView extends Element implements GestureListener{
         zoom = Mathf.clamp(zoom, 0.2f, 20f);
     }
 
-    Point2 project(float x, float y){
+    public Point2 project(float x, float y){
         float ratio = 1f / ((float)editor.width() / editor.height());
         float size = Math.min(width, height);
         float sclwidth = size * zoom;
@@ -420,7 +421,7 @@ public class MapView extends Element implements GestureListener{
         return Core.scene != null && Core.scene.getKeyboardFocus() != null
         && Core.scene.getKeyboardFocus().isDescendantOf(ui.editor)
         && ui.editor.isShown() && tool == EditorTool.zoom &&
-        Core.scene.hit(Core.input.mouse().x, Core.input.mouse().y, true) == this;
+        Core.scene.getHoverElement() == this;
     }
 
     @Override
